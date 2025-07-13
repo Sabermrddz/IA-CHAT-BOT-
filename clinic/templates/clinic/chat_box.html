@@ -163,22 +163,31 @@
             background: #9333ea;
         }
         .chatbox-bubble {
-            max-width: 70%;
-            padding: 0.75rem 1.25rem;
-            border-radius: 1.25rem;
-            font-size: 1rem;
-            line-height: 1.4;
-            background: #23232a;
-            color: #fff;
-            word-break: break-word;
+            max-width: 85%;
+            font-size: 1.08rem;
+            padding: 1rem 1.5rem;
+            border-radius: 2rem;
+            box-shadow: 0 2px 12px 0 rgba(0,0,0,0.10);
+            transition: box-shadow 0.2s, background 0.2s;
         }
         .chatbox-bubble.user {
-            background: #131316;
-            color: #fff;
+            border-bottom-right-radius: 0.7rem;
         }
         .chatbox-bubble.ai {
-            background: #131316;
-            color: #fff;
+            border-bottom-left-radius: 0.7rem;
+        }
+        @media (min-width: 640px) {
+            .chatbox-bubble {
+                max-width: 600px;
+            }
+        }
+        @media (max-width: 600px) {
+            .chatbox-bubble {
+                max-width: 98vw;
+                font-size: 1.01rem;
+                padding: 0.85rem 1.1rem;
+                border-radius: 1.5rem;
+            }
         }
         
         /* Typing indicator styles */
@@ -216,17 +225,35 @@
         @media (max-width: 600px) {
             .chatbox-card {
                 max-width: 100vw;
+                width: 100vw;
                 min-height: 100vh;
                 margin: 0;
                 border-radius: 0;
+                box-shadow: none;
             }
             .chatbox-header, .chatbox-messages, .chatbox-input-row {
-                padding-left: 1rem;
-                padding-right: 1rem;
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+            }
+            .chatbox-header {
+                padding-top: 1rem;
+                padding-bottom: 0.5rem;
             }
             .chatbox-messages {
-                max-height: 60vh;
-                min-height: 200px;
+                padding-top: 1rem;
+                padding-bottom: 1rem;
+                max-height: 55vh;
+            }
+            .chatbox-info-bar {
+                font-size: 0.97rem;
+                flex-direction: column;
+                gap: 0.25rem;
+                text-align: center;
+            }
+            .chatbox-bubble {
+                max-width: 98vw;
+                font-size: 1.01rem;
+                padding: 0.85rem 1.1rem;
             }
         }
         /* Animations and styles from home page */
@@ -377,8 +404,8 @@
             color: #fff;
             border: 1.5px solid #27272a;
             border-radius: 9999px;
-            padding: 0.7rem 1.5rem;
-            font-size: 1rem;
+            padding: 0.35rem 0.7rem;
+            font-size: 0.92rem !important;
             cursor: pointer;
             text-decoration: none;
             transition: background 0.2s, border 0.2s;
@@ -387,6 +414,9 @@
             background: #2d2d32;
             border: 1.5px solid #3b82f6;
             color: #fff;
+        }
+        .howit-btn i {
+            font-size: 1rem !important;
         }
         .chatbox-info-bar {
             display: flex;
@@ -525,7 +555,7 @@
 
 
         // Initial greeting (displayed only once, not sent to API)
-        const INITIAL_GREETING = "Hello! I am your medical AI assistant for Inspair.Health, developed by Mourad Mostafa Saber. I can ONLY help with health-related questions such as: medical conditions, symptoms, treatments, medications, nutrition, exercise for health, mental health, and preventive care. I provide clear, professional medical information for educational purposes only. Please note: I cannot replace professional medical advice. What health-related question can I help you with today?";
+        const INITIAL_GREETING = "Hello! I'm your medical AI assistant. Developed by sabermrddz. I can help with health questions only. What can I help you with?";
 
 
 

@@ -34,6 +34,18 @@ def chat_ai(request):
         # OpenRouter API config
         import os
         api_key = os.getenv('OPENROUTER_API_KEY')
+        
+        # Check if API key is available
+        if not api_key:
+            logging.error("[chat_ai] OPENROUTER_API_KEY not found in environment variables")
+            logging.error(f"[chat_ai] Available environment variables: {list(os.environ.keys())}")
+            return JsonResponse({
+                'error': 'AI service not configured',
+                'details': 'OpenRouter API key is not set. Please configure OPENROUTER_API_KEY environment variable.'
+            }, status=503)
+        
+        logging.info(f"[chat_ai] API key found: {api_key[:10]}..." if api_key else "[chat_ai] No API key found")
+        
         endpoint = "https://openrouter.ai/api/v1/chat/completions"
         headers = {
             "Authorization": f"Bearer {api_key}",
@@ -48,16 +60,24 @@ def chat_ai(request):
             "STRICT RULES - YOU MUST FOLLOW THESE:\n"
             "1. ONLY answer questions about: medical conditions, symptoms, treatments, medications, health advice, nutrition, exercise for health, mental health, preventive care, and general health information\n"
             "2. If asked about ANY non-health topic (technology, sports, news, entertainment, politics, etc.), respond with: 'I am a medical AI assistant and can only help with health-related questions. Please ask me about medical topics, symptoms, treatments, or general health information.'\n"
-            "3. Always provide clear, concise, and professional medical information\n"
+            "3. ADAPT YOUR RESPONSE LENGTH TO THE QUESTION: Short questions get concise answers, complex questions get detailed answers\n"
             "4. Use simple, understandable language while maintaining medical accuracy\n"
             "5. Always include this disclaimer: 'This is for informational purposes only. Please consult a healthcare professional for medical advice.'\n"
             "6. Never provide definitive diagnoses - only general information and guidance\n"
             "7. If unsure about a medical topic, say: 'I recommend consulting with a healthcare professional for this specific medical question.'\n"
-            "8. Keep responses focused and to the point\n"
-            "9. Respond in the same language as the user (English or Arabic)\n\n"
+            "8. Keep responses focused and relevant to what was asked\n"
+            "9. Respond in the same language as the user (English or Arabic)\n"
+            "10. Always check your response quality and ensure you're providing appropriate, helpful medical information\n\n"
+            "RESPONSE GUIDELINES:\n"
+            "- For simple questions (1-2 words): Give brief, direct answers (2-3 sentences)\n"
+            "- For moderate questions: Provide balanced information (4-6 sentences)\n"
+            "- For complex questions: Give comprehensive but focused answers\n"
+            "- Always include the required disclaimer\n"
+            "- Focus on the most relevant information for the specific question\n\n"
             "EXAMPLE RESPONSES:\n"
             "- For non-health questions: 'I am a medical AI assistant and can only help with health-related questions. Please ask me about medical topics, symptoms, treatments, or general health information.'\n"
-            "- For health questions: Provide clear, professional medical information with the disclaimer\n\n"
+            "- For simple health questions: Brief, direct medical information with disclaimer\n"
+            "- For complex health questions: Detailed but focused medical information with disclaimer\n\n"
             "CRITICAL: Respond with plain text only. No XML tags, HTML tags, or special formatting. Write your response directly."
         )
 
@@ -103,7 +123,7 @@ def chat_ai(request):
         payload = {
             "model": "tencent/hunyuan-a13b-instruct:free",
             "messages": messages,
-            "max_tokens": 512,
+            "max_tokens": 300,
             "temperature": 0.7,
             "stream": False
         }
@@ -190,6 +210,8 @@ def chat_ai(request):
                 ai_message = "I'm sorry, I couldn't generate a response. Please try again."
             
         logging.info(f"[chat_ai] Final cleaned response: {ai_message}")
+        logging.info(f"[chat_ai] Response length: {len(ai_message)} characters")
+        logging.info(f"[chat_ai] API call successful - OpenRouter working correctly")
         return JsonResponse({'response': ai_message})
 
     except Exception as e:
