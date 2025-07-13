@@ -761,7 +761,7 @@
                     // Get the CSRF token
                     const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
-                    // Disable submit button
+                    // Disable submit button and show loading state
                     const submitBtn = contactForm.querySelector('button[type="submit"]');
                     const originalBtnText = submitBtn.innerHTML;
                     submitBtn.disabled = true;
@@ -778,11 +778,12 @@
                     })
                     .then(response => {
                         if (!response.ok) {
-                            throw new Error('Network response was not ok');
+                            throw new Error(`HTTP error! status: ${response.status}`);
                         }
                         return response.json();
                     })
                     .then(data => {
+                        console.log('Server response:', data);  // Debug log
                         if (data.success) {
                             successAlert.classList.remove('hidden');
                             contactForm.reset();
@@ -793,7 +794,7 @@
                     })
                     .catch(error => {
                         console.error('Error:', error);
-                        errorAlert.textContent = 'Error sending message. Please try again.';
+                        errorAlert.textContent = `Error sending message: ${error.message}`;
                         errorAlert.classList.remove('hidden');
                     })
                     .finally(() => {

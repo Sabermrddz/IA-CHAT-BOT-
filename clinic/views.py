@@ -18,47 +18,55 @@ def contact(request):
     from django.conf import settings
     from django.http import JsonResponse
     import re
+    import traceback
+    import logging
+
+    logger = logging.getLogger(__name__)
 
     if request.method == 'POST':
-        name = request.POST.get('name', '').strip()
-        email = request.POST.get('email', '').strip()
-        phone = request.POST.get('phone', '').strip()
-        subject = request.POST.get('subject', 'General Inquiry').strip()
-        message = request.POST.get('message', '').strip()
-
-        # Validation
-        if not all([name, email, message]):
-            return JsonResponse({
-                'success': False,
-                'error': 'Please fill in all required fields.'
-            })
-
-        # Validate email format
-        email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-        if not re.match(email_regex, email):
-            return JsonResponse({
-                'success': False,
-                'error': 'Please enter a valid email address.'
-            })
-
-        # Validate name (only letters, spaces, and hyphens)
-        name_regex = r'^[a-zA-Z\s-]+$'
-        if not re.match(name_regex, name):
-            return JsonResponse({
-                'success': False,
-                'error': 'Name should only contain letters, spaces, and hyphens.'
-            })
-
         try:
+            # Get form data
+            name = request.POST.get('name', '').strip()
+            email = request.POST.get('email', '').strip()
+            phone = request.POST.get('phone', '').strip()
+            subject = request.POST.get('subject', 'General Inquiry').strip()
+            message = request.POST.get('message', '').strip()
+
+            # Debug logging
+            logger.debug(f"Form submission received - Name: {name}, Email: {email}")
+            logger.debug(f"Current email settings - Backend: {settings.EMAIL_BACKEND}")
+            logger.debug(f"Email Host User: {settings.EMAIL_HOST_USER}")
+
+            # Validation
+            if not all([name, email, message]):
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Please fill in all required fields.'
+                })
+
+            # Email format validation
+            email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+            if not re.match(email_regex, email):
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Please enter a valid email address.'
+                })
+
             # Construct email message
-            full_message = (
-                f"New Contact Form Submission\n\n"
-                f"Name: {name}\n"
-                f"Email: {email}\n"
-                f"Phone: {phone}\n"
-                f"Subject: {subject}\n\n"
-                f"Message:\n{message}"
-            )
+            full_message = f"""
+New Contact Form Submission
+
+Name: {name}
+Email: {email}
+Phone: {phone}
+Subject: {subject}
+
+Message:
+{message}
+            """
+
+            # Debug logging before sending
+            logger.debug("Attempting to send email...")
 
             # Send email
             send_mail(
@@ -69,18 +77,28 @@ def contact(request):
                 fail_silently=False,
             )
             
-            return JsonResponse({'success': True})
+            # Debug logging after successful send
+            logger.debug("Email sent successfully")
             
-        except BadHeaderError:
+            return JsonResponse({
+                'success': True,
+                'message': 'Your message has been sent successfully!'
+            })
+            
+        except BadHeaderError as e:
+            logger.error(f"BadHeaderError: {str(e)}")
             return JsonResponse({
                 'success': False,
                 'error': 'Invalid header found in the message.'
             })
         except Exception as e:
-            print(f"Error sending email: {str(e)}")
+            # Log the full error traceback
+            logger.error("Error in contact form submission:")
+            logger.error(traceback.format_exc())
+            
             return JsonResponse({
                 'success': False,
-                'error': 'There was an error sending your message. Please try again later.'
+                'error': f'Error sending message: {str(e)}'
             })
 
     return render(request, 'clinic/contact.html')
