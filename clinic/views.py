@@ -16,15 +16,26 @@ def contact(request):
     """Contact page view for the medical clinic."""
     from django.core.mail import send_mail
     from django.conf import settings
-    from django.contrib import messages
+    from django.http import JsonResponse
+    import json
+    import re
 
-    context = {}
     if request.method == 'POST':
         name = request.POST.get('name', '')
         email = request.POST.get('email', '')
         phone = request.POST.get('phone', '')
         subject = request.POST.get('subject', 'General Inquiry')
         message = request.POST.get('message', '')
+
+        # Validate email format
+        email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        if not re.match(email_regex, email):
+            return JsonResponse({'success': False, 'error': 'Invalid email format'})
+
+        # Validate name (only letters, spaces, and hyphens)
+        name_regex = r'^[a-zA-Z\s-]+$'
+        if not re.match(name_regex, name):
+            return JsonResponse({'success': False, 'error': 'Invalid name format'})
 
         try:
             full_message = f"Name: {name}\nEmail: {email}\nPhone: {phone}\nSubject: {subject}\nMessage: {message}"
@@ -35,13 +46,17 @@ def contact(request):
                 recipient_list=[settings.EMAIL_HOST_USER],
                 fail_silently=False,
             )
-            context['success'] = True
-            messages.success(request, "Thank you! Your message has been sent successfully.")
-        except Exception as e:
-            messages.error(request, "Sorry, there was an error sending your message. Please try again later.")
-            print(f"Error sending email: {str(e)}")
             
-    return render(request, 'clinic/contact.html', context)
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({'success': True})
+            return render(request, 'clinic/contact.html', {'success': True})
+            
+        except Exception as e:
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({'success': False, 'error': str(e)})
+            return render(request, 'clinic/contact.html', {'error': str(e)})
+
+    return render(request, 'clinic/contact.html')
 
 def daily_posts(request):
     """Daily posts page view for the medical clinic."""
