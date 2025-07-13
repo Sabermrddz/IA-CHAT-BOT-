@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inspair.Health - Smart Health Starts Here</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Custom Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+        @keyframes gradientShift {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        @keyframes particleFloat {
+            0%, 100% {
+                transform: translateY(0px) translateX(0px);
+                opacity: 0.6;
+            }
+            33% {
+                transform: translateY(-20px) translateX(10px);
+                opacity: 0.8;
+            }
+            66% {
+                transform: translateY(-10px) translateX(-10px);
+                opacity: 0.7;
+            }
+        }
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        @keyframes wave {
+            0%, 100% {
+                transform: translateX(-100%);
+            }
+            50% {
+                transform: translateX(100%);
+            }
+        }
+        @keyframes glow {
+            0%, 100% {
+                box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+            }
+            50% {
+                box-shadow: 0 0 25px rgba(147, 51, 234, 0.3);
+            }
+        }
+                        
+        .animate-fadeInUp {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        .animate-slideDown {
+            animation: slideDown 0.3s ease-out forwards;
+        }
+        .animate-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+        .animate-gradient {
+            animation: gradientShift 6s ease-in-out infinite;
+        }
+        .animate-particle {
+            animation: particleFloat 12s ease-in-out infinite;
+        }
+        .animate-rotate {
+            animation: rotate 25s linear infinite;
+        }
+        .animate-wave {
+            animation: wave 8s ease-in-out infinite;
+        }
+        .animate-glow {
+            animation: glow 4s ease-in-out infinite;
+        }
+                        
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+        .delay-500 { animation-delay: 0.5s; }
+        .delay-600 { animation-delay: 0.6s; }
+        .delay-1000 { animation-delay: 1s; }
+        .delay-2000 { animation-delay: 2s; }
+        .delay-3000 { animation-delay: 3s; }
+        .delay-4000 { animation-delay: 4s; }
+        .delay-5000 { animation-delay: 5s; }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1f2937;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #ffffff, #9ca3af);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #f3f4f6, #6b7280);
+        }
+        /* Smooth transitions */
+        * {
+            transition: all 0.3s ease;
+        }
+        /* Hero image container */
+        .hero-image {
+            position: absolute;
+            inset: 0;
+            transition: opacity 0.7s ease-in-out;
+        }
+        .hero-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to right, rgba(0,0,0,0.6), rgba(0,0,0,0.4), rgba(0,0,0,0.5));
+        }
+        /* Enhanced Service Card Styles */
+        .service-card {
+            position: relative;
+            transition: all 0.5s ease;
+            background: linear-gradient(135deg, rgba(31, 41, 55, 0.8), rgba(17, 24, 39, 0.8), rgba(0, 0, 0, 0.8));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(75, 85, 99, 0.5);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), transparent, rgba(147, 51, 234, 0.1));
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            border-radius: 12px;
+        }
+        .service-card:hover::before {
+            opacity: 1;
+        }
+        .service-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border-color: rgba(156, 163, 175, 0.5);
+        }
+        .service-card-top-accent {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(to right, #60a5fa, #ffffff, #a855f7);
+        }
+        /* Much Darker Professional Services Background */
+        .services-section {
+            position: relative;
+            background: linear-gradient(135deg, #000000, #0a0a0a, #050505, #111111, #000000);
+            background-size: 400% 400%;
+            animation: gradientShift 10s ease-in-out infinite;
+        }
+        .services-particles {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+        }
+        .particle {
+            position: absolute;
+            background: linear-gradient(45deg, rgba(59, 130, 246, 0.4), rgba(147, 51, 234, 0.4));
+            border-radius: 50%;
+            pointer-events: none;
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+        }
+        .services-geometric {
+            position: absolute;
+            inset: 0;
+            opacity: 0.25;
+        }
+        .geometric-shape {
+            position: absolute;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: linear-gradient(45deg, rgba(59, 130, 246, 0.1), rgba(147, 51, 234, 0.1));
+            backdrop-filter: blur(3px);
+        }
+        .services-overlay {
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(147, 51, 234, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 60%, rgba(6, 182, 212, 0.1) 0%, transparent 50%);
+        }
+        .services-waves {
+            position: absolute;
+            inset: 0;
+            opacity: 0.15;
+        }
+        .wave {
+            position: absolute;
+            width: 200%;
+            height: 80px;
+            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.2), transparent);
+            transform: translateX(-100%);
+        }
+        /* Floating orbs - reduced visibility */
+        .floating-orb {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.3), rgba(147, 51, 234, 0.2));
+            filter: blur(3px);
+            animation: particleFloat 15s ease-in-out infinite;
+        }
+        /* Simplified Copyright Styles */
+        .copyright-simple {
+            font-size: 1.25rem;
+            font-weight: 600;
+            background: linear-gradient(45deg, #ffffff, #60a5fa, #a855f7, #ffffff);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+            animation: gradientShift 3s ease-in-out infinite;
+            padding: 1rem 0;
+        }
+        /* Social media hover colors */
+        .social-facebook:hover { color: #3b82f6 !important; }
+        .social-instagram:hover { color: #ec4899 !important; }
+        .social-telegram:hover { color: #06b6d4 !important; }
+        .social-twitter:hover { color: #d1d5db !important; }
+        /* Navigation underline effect */
+        .nav-link {
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(to right, #ffffff, #d1d5db);
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+        /* Floating shapes */
+        .floating-shape {
+            border-radius: 50%;
+            filter: blur(40px);
+        }
+        /* Icon hover effects */
+        .icon-hover:hover {
+            transform: scale(1.1);
+        }
+        /* Button enhancements */
+        .btn-gradient {
+            background: linear-gradient(to right, #ffffff, #f3f4f6);
+        }
+        .btn-gradient:hover {
+            background: linear-gradient(to right, #f3f4f6, #ffffff);
+        }
+        /* Text gradient */
+        .text-gradient {
+            background: linear-gradient(to right, #ffffff, #93c5fd, #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
+</head>
+<body class="bg-black text-white">
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed top-0 w-full z-50 transition-all duration-500 bg-black/90 backdrop-blur-md border-b border-gray-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 group">
+                        <a href="/">
+                            <h1 class="text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-300">
+                                Inspair.Health
+                            </h1>
+                        </a>
+                    </div>
+                </div>
+                <!-- Desktop Navigation -->
+                <div class="hidden md:block">
+                    <div class="flex items-center space-x-8">
+                        <a href="{% url 'clinic:home' %}" class="nav-link active text-white font-medium">Home</a>
+                        <a href="{% url 'clinic:chat_box' %}" class="nav-link text-gray-400 hover:text-white">AI Chat</a>
+                        <a href="{% url 'clinic:daily_posts' %}" class="nav-link text-gray-400 hover:text-white">Daily Posts</a>
+                        <a href="{% url 'clinic:about' %}" class="nav-link text-gray-400 hover:text-white">About</a>
+                        <a href="{% url 'clinic:contact' %}" class="nav-link text-gray-400 hover:text-white">Contact</a>
+                    </div>
+                </div>
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <button id="mobile-menu-btn" class="hover:bg-gray-800 text-white p-2 rounded-md">
+                        <i id="menu-icon" class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            <!-- Mobile Navigation -->
+            <div id="mobile-menu" class="md:hidden hidden animate-slideDown">
+                <div class="px-2 pt-2 pb-3 space-y-1 bg-black/95 backdrop-blur-xl rounded-lg mt-2 shadow-xl border border-gray-800">
+                    <a href="{% url 'clinic:home' %}" class="block px-3 py-2 text-white font-medium bg-gray-800 rounded-md">Home</a>
+                    <a href="{% url 'clinic:chat_box' %}" class="block px-3 py-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-md">AI Chat</a>
+                    <a href="{% url 'clinic:daily_posts' %}" class="block px-3 py-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-md">Daily Posts</a>
+                    <a href="{% url 'clinic:about' %}" class="block px-3 py-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-md">About</a>
+                    <a href="{% url 'clinic:contact' %}" class="block px-3 py-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-md">Contact</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative pt-24 pb-20 lg:pt-32 lg:pb-32 overflow-hidden bg-gradient-to-b from-black via-gray-900 to-gray-800">
+        <!-- Background Images -->
+        <div id="hero-images" class="absolute inset-0 z-0">
+            <div class="hero-image opacity-100">
+                <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/pexels-googledeepmind-17483868.jpg-34C62rOxsB7ZdZCQLUNNgea6Hgrcwa.jpeg" alt="AI Brain Network">
+                <div class="hero-overlay"></div>
+            </div>
+            <div class="hero-image opacity-0">
+                <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/pexels-googledeepmind-17485742.jpg-FgiygLoHk56RQqrHsMPVdoQJbcS7R1.jpeg" alt="Medical Technology">
+                <div class="hero-overlay"></div>
+            </div>
+            <div class="hero-image opacity-0">
+                <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/pexels-googledeepmind-17483867.jpg-D4t7ylRQRN99WqrzuoqaO7zVUj57Mn.jpeg" alt="Neural Brain AI">
+                <div class="hero-overlay"></div>
+            </div>
+        </div>
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <!-- Text Content -->
+                <div class="text-center lg:text-left">
+                    <h1 class="text-4xl md:text-6xl font-bold text-white mb-6 animate-fadeInUp drop-shadow-lg">
+                        Welcome to Inspair.Health
+                    </h1>
+                    <p class="text-xl md:text-2xl text-gray-200 mb-4 animate-fadeInUp delay-200 drop-shadow-md">
+                        Smart health starts here
+                    </p>
+                    <p class="text-lg text-gray-300 mb-8 animate-fadeInUp delay-300 drop-shadow-md">
+                        Experience the future of healthcare with AI-powered assistance and personalized health insights from certified medical professionals.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-fadeInUp delay-400">
+                        <a href="{% url 'clinic:chat_box' %}" class="bg-white text-black hover:bg-gray-200 px-8 py-4 text-lg rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 font-semibold flex items-center justify-center">
+                            <i class="fas fa-comments mr-2"></i>
+                            Start Chat Now
+                        </a>
+                        <a href="{% url 'clinic:daily_posts' %}" class="border-2 border-white text-white hover:bg-white hover:text-black px-8 py-4 text-lg rounded-full transition-all duration-300 bg-transparent backdrop-blur-sm flex items-center justify-center">
+                            <i class="fas fa-book-open mr-2"></i>
+                            Daily Posts
+                        </a>
+                    </div>
+                </div>
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-white/15 backdrop-blur-md border border-white/30 text-white hover:bg-white/25 transition-all duration-300 shadow-lg rounded-lg p-6 text-center">
+                        <i class="fas fa-users text-3xl mx-auto mb-3 text-gray-200"></i>
+                        <div class="text-2xl font-bold mb-1">50K+</div>
+                        <div class="text-sm text-gray-300">Active Users</div>
+                    </div>
+                    <div class="bg-white/15 backdrop-blur-md border border-white/30 text-white hover:bg-white/25 transition-all duration-300 shadow-lg rounded-lg p-6 text-center">
+                        <i class="fas fa-award text-3xl mx-auto mb-3 text-gray-200"></i>
+                        <div class="text-2xl font-bold mb-1">99.9%</div>
+                        <div class="text-sm text-gray-300">Satisfaction Rate</div>
+                    </div>
+                    <div class="bg-white/15 backdrop-blur-md border border-white/30 text-white hover:bg-white/25 transition-all duration-300 shadow-lg rounded-lg p-6 text-center">
+                        <i class="fas fa-clock text-3xl mx-auto mb-3 text-gray-200"></i>
+                        <div class="text-2xl font-bold mb-1">24/7</div>
+                        <div class="text-sm text-gray-300">Support Available</div>
+                    </div>
+                    <div class="bg-white/15 backdrop-blur-md border border-white/30 text-white hover:bg-white/25 transition-all duration-300 shadow-lg rounded-lg p-6 text-center">
+                        <i class="fas fa-shield-alt text-3xl mx-auto mb-3 text-gray-200"></i>
+                        <div class="text-2xl font-bold mb-1">100%</div>
+                        <div class="text-sm text-gray-300">HIPAA Compliant</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Image indicators -->
+        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3 z-10">
+            <button class="indicator w-3 h-3 rounded-full bg-white shadow-lg scale-125 transition-all duration-300" data-index="0"></button>
+            <button class="indicator w-3 h-3 rounded-full bg-white/60 hover:bg-white/80 transition-all duration-300" data-index="1"></button>
+            <button class="indicator w-3 h-3 rounded-full bg-white/60 hover:bg-white/80 transition-all duration-300" data-index="2"></button>
+        </div>
+    </section>
+
+    <!-- Enhanced Professional Services Section -->
+    <section class="services-section py-24 overflow-hidden">
+        <!-- Animated Particles -->
+        <div class="services-particles" id="particles-container"></div>
+                
+        <!-- Floating Orbs - Reduced -->
+        <div class="floating-orb w-24 h-24 top-20 left-20 animate-particle"></div>
+        <div class="floating-orb w-20 h-20 top-40 right-32 animate-particle delay-3000"></div>
+        <div class="floating-orb w-28 h-28 bottom-32 left-1/4 animate-particle delay-5000"></div>
+                
+        <!-- Geometric Shapes - Reduced -->
+        <div class="services-geometric">
+            <div class="geometric-shape w-24 h-24 top-20 left-20 animate-rotate animate-glow" style="border-radius: 20%; transform-origin: center;"></div>
+            <div class="geometric-shape w-20 h-20 top-40 right-32 animate-rotate delay-2000 animate-glow" style="border-radius: 30%; transform-origin: center;"></div>
+            <div class="geometric-shape w-32 h-32 bottom-32 left-1/4 animate-rotate delay-4000 animate-glow" style="border-radius: 25%; transform-origin: center;"></div>
+            <div class="geometric-shape w-18 h-18 top-1/3 right-10 animate-rotate delay-5000 animate-glow" style="border-radius: 50%; transform-origin: center;"></div>
+        </div>
+        <!-- Animated Waves - Reduced -->
+        <div class="services-waves">
+            <div class="wave top-1/3 animate-wave"></div>
+            <div class="wave top-2/3 animate-wave delay-4000"></div>
+        </div>
+        <!-- Enhanced Radial Gradient Overlays -->
+        <div class="services-overlay"></div>
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-20">
+                <h2 class="text-4xl md:text-5xl font-bold text-gradient mb-6">Our Professional Services</h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+                    Comprehensive healthcare solutions powered by cutting-edge AI technology and certified medical professionals
+                </p>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Service 1 -->
+                <div class="service-card group">
+                    <div class="service-card-top-accent"></div>
+                    <div class="relative p-8 transform group-hover:-translate-y-2 transition-all duration-500">
+                        <div class="mx-auto w-20 h-20 bg-gradient-to-br from-gray-700 to-gray-800 rounded-full flex items-center justify-center mb-6 group-hover:from-gray-600 group-hover:to-gray-700 transition-all duration-300 group-hover:scale-110 border border-gray-500 group-hover:border-gray-400 shadow-lg">
+                            <i class="fas fa-brain text-4xl text-white"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white group-hover:text-blue-100 transition-colors duration-300 mb-4 text-center">
+                            AI-Powered Medical Assistant
+                        </h3>
+                        <p class="text-gray-300 leading-relaxed text-base mb-6 text-center">
+                            Advanced artificial intelligence provides instant medical guidance, symptom analysis, and personalized health recommendations available 24/7.
+                        </p>
+                        <div class="space-y-3 mb-6">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-check-circle text-green-400"></i>
+                                <span class="text-gray-300 font-medium">Instant Diagnosis Support</span>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-check-circle text-green-400"></i>
+                                <span class="text-gray-300 font-medium">Symptom Checker</span>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-check-circle text-green-400"></i>
+                                <span class="text-gray-300 font-medium">24/7 Availability</span>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-check-circle text-green-400"></i>
+                                <span class="text-gray-300 font-medium">Multilingual Support</span>
+                            </div>
+                        </div>
+                        <a href="{% url 'clinic:chat_box' %}" class="w-full btn-gradient text-black rounded-lg py-3 font-semibold transition-all duration-300 transform group-hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center">
+                            Learn More
+                        </a>
+                    </div>
+                </div>
+                <!-- Service 2 -->
+                <div class="service-card group">
+                    <div class="service-card-top-accent"></div>
+                    <div class="relative p-8 transform group-hover:-translate-y-2 transition-all duration-500">
+                        <div class="mx-auto w-20 h-20 bg-gradient-to-br from-gray-700 to-gray-800 rounded-full flex items-center justify-center mb-6 group-hover:from-gray-600 group-hover:to-gray-700 transition-all duration-300 group-hover:scale-110 border border-gray-500 group-hover:border-gray-400 shadow-lg">
+                            <i class="fas fa-chart-line text-4xl text-white"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white group-hover:text-blue-100 transition-colors duration-300 mb-4 text-center">
+                            Daily Health Insights
+                        </h3>
+                        <p class="text-gray-300 leading-relaxed text-base mb-6 text-center">
+                            Curated medical content, wellness tips, and health news from certified healthcare professionals updated daily for your wellbeing.
+                        </p>
+                        <div class="space-y-3 mb-6">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-check-circle text-green-400"></i>
+                                <span class="text-gray-300 font-medium">Expert-Curated Content</span>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-check-circle text-green-400"></i>
+                                <span class="text-gray-300 font-medium">Personalized Tips</span>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-check-circle text-green-400"></i>
+                                <span class="text-gray-300 font-medium">Latest Medical News</span>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-check-circle text-green-400"></i>
+                                <span class="text-gray-300 font-medium">Wellness Tracking</span>
+                            </div>
+                        </div>
+                        <a href="{% url 'clinic:daily_posts' %}" class="w-full btn-gradient text-black rounded-lg py-3 font-semibold transition-all duration-300 transform group-hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center">
+                            Learn More
+                        </a>
+                    </div>
+                </div>
+                <!-- Service 3 - Updated with AI Medical Excellence -->
+                <div class="service-card group">
+                    <div class="service-card-top-accent"></div>
+                    <div class="relative p-8 transform group-hover:-translate-y-2 transition-all duration-500">
+                        <div class="mx-auto w-20 h-20 bg-gradient-to-br from-gray-700 to-gray-800 rounded-full flex items-center justify-center mb-6 group-hover:from-gray-600 group-hover:to-gray-700 transition-all duration-300 group-hover:scale-110 border border-gray-500 group-hover:border-gray-400 shadow-lg">
+                            <i class="fas fa-microchip text-4xl text-white"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white group-hover:text-blue-100 transition-colors duration-300 mb-4 text-center">
+                            AI Medical Excellence
+                        </h3>
+                        <p class="text-gray-300 leading-relaxed text-base mb-6 text-center">
+                            Harness the power of advanced AI algorithms trained on vast medical datasets to deliver precision diagnostics, predictive analytics, and evidence-based treatment recommendations.
+                        </p>
+                        <div class="space-y-3 mb-6">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-check-circle text-green-400"></i>
+                                <span class="text-gray-300 font-medium">Machine Learning Diagnostics</span>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-check-circle text-green-400"></i>
+                                <span class="text-gray-300 font-medium">Predictive Health Analytics</span>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-check-circle text-green-400"></i>
+                                <span class="text-gray-300 font-medium">Evidence-Based Recommendations</span>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-check-circle text-green-400"></i>
+                                <span class="text-gray-300 font-medium">Continuous Learning System</span>
+                            </div>
+                        </div>
+                        <a href="{% url 'clinic:about' %}" class="w-full btn-gradient text-black rounded-lg py-3 font-semibold transition-all duration-300 transform group-hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center">
+                            Learn More
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trust Indicators -->
+    <section class="py-16 bg-gradient-to-b from-gray-600 via-gray-500 to-gray-400 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold text-white mb-4">Trusted by Healthcare Professionals</h3>
+                <p class="text-gray-200 text-lg">Certified, secure, and compliant with medical standards</p>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div class="text-center group hover:scale-105 transition-transform duration-300">
+                    <div class="bg-white/10 backdrop-blur-sm rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4 group-hover:bg-white/20 transition-all duration-300">
+                        <i class="fas fa-shield-alt text-5xl text-white"></i>
+                    </div>
+                    <div class="text-white font-semibold">HIPAA Compliant</div>
+                </div>
+                <div class="text-center group hover:scale-105 transition-transform duration-300">
+                    <div class="bg-white/10 backdrop-blur-sm rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4 group-hover:bg-white/20 transition-all duration-300">
+                        <i class="fas fa-award text-5xl text-white"></i>
+                    </div>
+                    <div class="text-white font-semibold">FDA Approved</div>
+                </div>
+                <div class="text-center group hover:scale-105 transition-transform duration-300">
+                    <div class="bg-white/10 backdrop-blur-sm rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4 group-hover:bg-white/20 transition-all duration-300">
+                        <i class="fas fa-handshake text-5xl text-white"></i>
+                    </div>
+                    <div class="text-white font-semibold">Licensed Doctors</div>
+                </div>
+                <div class="text-center group hover:scale-105 transition-transform duration-300">
+                    <div class="bg-white/10 backdrop-blur-sm rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4 group-hover:bg-white/20 transition-all duration-300">
+                        <i class="fas fa-heartbeat text-5xl text-white"></i>
+                    </div>
+                    <div class="text-white font-semibold">Real-time Monitoring</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Enhanced Footer -->
+    <footer class="relative overflow-hidden">
+        <!-- Enhanced Background -->
+        <div class="absolute inset-0 bg-gradient-to-b from-gray-800 via-gray-900 to-black"></div>
+                
+        <!-- Animated background elements -->
+        <div class="absolute inset-0 opacity-20">
+            <div class="floating-shape absolute animate-pulse" style="width: 160px; height: 160px; background: #2563eb; top: 40px; left: 40px; border-radius: 50%; filter: blur(40px);"></div>
+            <div class="floating-shape absolute animate-pulse delay-1000" style="width: 128px; height: 128px; background: #7c3aed; top: 80px; right: 80px; border-radius: 50%; filter: blur(40px);"></div>
+            <div class="floating-shape absolute animate-pulse delay-2000" style="width: 144px; height: 144px; background: #06b6d4; bottom: 80px; left: 25%; border-radius: 50%; filter: blur(40px);"></div>
+            <div class="floating-shape absolute animate-pulse delay-3000" style="width: 112px; height: 112px; background: #ec4899; bottom: 40px; right: 33.333333%; border-radius: 50%; filter: blur(40px);"></div>
+        </div>
+        <!-- Mesh gradient overlay -->
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-purple-900/20 to-cyan-900/20"></div>
+        <!-- Subtle pattern -->
+        <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.2) 1px, transparent 0); background-size: 40px 40px;"></div>
+        <!-- Top border gradient -->
+        <div class="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-blue-400 to-transparent"></div>
+        <div class="relative z-10 text-white py-20">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div id="footer-content-grid" class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+                    <!-- Company Info -->
+                    <div class="md:col-span-2 space-y-6 opacity-0 translate-y-10">
+                        <div>
+                            <h3 class="text-4xl font-bold text-gradient mb-4">
+                                Inspair.Health
+                            </h3>
+                            <p class="text-gray-300 leading-relaxed text-lg">
+                                Empowering your health journey with AI-powered insights and professional medical support. Join thousands of users who trust us with their wellness.
+                            </p>
+                        </div>
+                        <!-- Social Media Icons with Real Links -->
+                        <div>
+                            <h4 class="text-lg font-semibold mb-4 text-gray-200">Connect With Us</h4>
+                            <div class="flex space-x-4 mb-6">
+                                <a href="https://www.facebook.com/sab.er.mrd.71003" target="_blank" rel="noopener noreferrer" class="social-facebook w-12 h-12 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/20 transition-all duration-300 cursor-pointer group border border-gray-600 hover:border-gray-400 hover:scale-110">
+                                    <i class="fab fa-facebook-f text-2xl text-gray-300 group-hover:text-white transition-colors duration-300"></i>
+                                </a>
+                                <a href="https://www.instagram.com/saber_mrd_?igsh=NXIyM2kzbTNxYnhl" target="_blank" rel="noopener noreferrer" class="social-instagram w-12 h-12 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/20 transition-all duration-300 cursor-pointer group border border-gray-600 hover:border-gray-400 hover:scale-110">
+                                    <i class="fab fa-instagram text-2xl text-gray-300 group-hover:text-white transition-colors duration-300"></i>
+                                </a>
+                                <a href="https://t.me/InspaireDin" target="_blank" rel="noopener noreferrer" class="social-telegram w-12 h-12 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/20 transition-all duration-300 cursor-pointer group border border-gray-600 hover:border-gray-400 hover:scale-110">
+                                    <i class="fab fa-telegram-plane text-2xl text-gray-300 group-hover:text-white transition-colors duration-300"></i>
+                                </a>
+                                <a href="https://x.com/sabermourad7" target="_blank" rel="noopener noreferrer" class="social-twitter w-12 h-12 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/20 transition-all duration-300 cursor-pointer group border border-gray-600 hover:border-gray-400 hover:scale-110">
+                                    <i class="fab fa-twitter text-2xl text-gray-300 group-hover:text-white transition-colors duration-300"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <!-- Trust Badges -->
+                        <div>
+                            <h4 class="text-lg font-semibold mb-4 text-gray-200">Certifications</h4>
+                            <div class="flex space-x-4">
+                                <div class="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/20 transition-all duration-300 cursor-pointer group border border-gray-600 hover:border-gray-400 hover:scale-110">
+                                    <i class="fas fa-shield-alt text-xl text-gray-300 group-hover:text-white transition-colors duration-300"></i>
+                                </div>
+                                <div class="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/20 transition-all duration-300 cursor-pointer group border border-gray-600 hover:border-gray-400 hover:scale-110">
+                                    <i class="fas fa-stethoscope text-xl text-gray-300 group-hover:text-white transition-colors duration-300"></i>
+                                </div>
+                                <div class="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/20 transition-all duration-300 cursor-pointer group border border-gray-600 hover:border-gray-400 hover:scale-110">
+                                    <i class="fas fa-brain text-xl text-gray-300 group-hover:text-white transition-colors duration-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Quick Links -->
+                    <div class="opacity-0 translate-y-10">
+                        <h4 class="text-xl font-semibold mb-6 text-white">Quick Links</h4>
+                        <div class="space-y-4">
+                            <a href="{% url 'clinic:home' %}" class="block text-gray-400 hover:text-white transition-all duration-300 hover:translate-x-2 hover:text-blue-300 text-lg">Home</a>
+                            <a href="{% url 'clinic:chat_box' %}" class="block text-gray-400 hover:text-white transition-all duration-300 hover:translate-x-2 hover:text-blue-300 text-lg">AI Chat</a>
+                            <a href="{% url 'clinic:daily_posts' %}" class="block text-gray-400 hover:text-white transition-all duration-300 hover:translate-x-2 hover:text-blue-300 text-lg">Daily Posts</a>
+                            <a href="{% url 'clinic:about' %}" class="block text-gray-400 hover:text-white transition-all duration-300 hover:translate-x-2 hover:text-blue-300 text-lg">About</a>
+                            <a href="{% url 'clinic:contact' %}" class="block text-gray-400 hover:text-white transition-all duration-300 hover:translate-x-2 hover:text-blue-300 text-lg">Contact</a>
+                        </div>
+                    </div>
+                    <!-- Contact Info -->
+                    <div class="opacity-0 translate-y-10">
+                        <h4 class="text-xl font-semibold mb-6 text-white">Get In Touch</h4>
+                        <div class="space-y-4">
+                            <div class="flex items-center space-x-3 text-gray-400 hover:text-white transition-colors duration-300 group">
+                                <i class="fas fa-envelope w-5 h-5 group-hover:text-blue-400"></i>
+                                <a href="mailto:sabermrddz@gmail.com" class="text-lg">sabermrddz@gmail.com</a>
+                            </div>
+                            <div class="flex items-center space-x-3 text-gray-400 hover:text-white transition-colors duration-300 group">
+                                <i class="fas fa-phone w-5 h-5 group-hover:text-green-400"></i>
+                                <a href="tel:+213696331367" class="text-lg">+213 696331367</a>
+                            </div>
+                            <div class="flex items-center space-x-3 text-gray-400">
+                                <i class="fas fa-clock w-5 h-5 text-yellow-400"></i>
+                                <span class="text-lg">24/7 Medical Support</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Simplified Copyright Section -->
+                <div class="border-t border-gray-700/50 pt-8">
+                    <div class="copyright-simple" id="copyright-text">
+                        © 2024 Inspair.Health. All rights reserved. | HIPAA Compliant Healthcare Platform
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Hero Image Carousel
+        let currentImageIndex = 0;
+        const heroImages = document.querySelectorAll('.hero-image');
+        const indicators = document.querySelectorAll('.indicator');
+
+        function showImage(index) {
+            heroImages.forEach((img, i) => {
+                img.style.opacity = i === index ? '1' : '0';
+            });
+                        
+            indicators.forEach((indicator, i) => {
+                if (i === index) {
+                    indicator.classList.add('bg-white', 'shadow-lg', 'scale-125');
+                    indicator.classList.remove('bg-white/60');
+                } else {
+                    indicator.classList.remove('bg-white', 'shadow-lg', 'scale-125');
+                    indicator.classList.add('bg-white/60');
+                }
+            });
+        }
+
+        function nextImage() {
+            currentImageIndex = (currentImageIndex + 1) % heroImages.length;
+            showImage(currentImageIndex);
+        }
+
+        // Auto-change images every 2 seconds
+        setInterval(nextImage, 2000);
+
+        // Indicator click handlers
+        indicators.forEach((indicator, index) => {
+            indicator.addEventListener('click', () => {
+                currentImageIndex = index;
+                showImage(currentImageIndex);
+            });
+        });
+
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIcon = document.getElementById('menu-icon');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            if (mobileMenu.classList.contains('hidden')) {
+                menuIcon.classList.remove('fa-times');
+                menuIcon.classList.add('fa-bars');
+            } else {
+                menuIcon.classList.remove('fa-bars');
+                menuIcon.classList.add('fa-times');
+            }
+        });
+
+        // Header Scroll Effect
+        const navbar = document.getElementById('navbar');
+                
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.remove('bg-black/90', 'border-gray-900');
+                navbar.classList.add('bg-black/95', 'border-gray-800', 'shadow-2xl');
+            } else {
+                navbar.classList.remove('bg-black/95', 'border-gray-800', 'shadow-2xl');
+                navbar.classList.add('bg-black/90', 'border-gray-900');
+            }
+        });
+
+        // Footer Content Animation on Scroll
+        const footerContentGrid = document.getElementById('footer-content-grid');
+        const footerSections = footerContentGrid ? Array.from(footerContentGrid.children) : [];
+
+        const footerObserverOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const footerContentObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    footerSections.forEach((section, index) => {
+                        setTimeout(() => {
+                            section.style.opacity = '1';
+                            section.style.transform = 'translateY(0)';
+                            section.style.transition = 'all 0.8s ease-out';
+                        }, index * 200);
+                    });
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, footerObserverOptions);
+
+        // Start observing the footer content grid
+        if (footerContentGrid) {
+            footerContentObserver.observe(footerContentGrid);
+        }
+
+        // Reduced Animated Particles for Services Section
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles-container');
+            const particleCount = 40; // Reduced from 80
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle animate-particle';
+                                
+                // Smaller size range
+                const size = Math.random() * 8 + 3;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                                
+                // Random position
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                                
+                // Longer animation delays for less frequent movement
+                particle.style.animationDelay = Math.random() * 12 + 's';
+                                
+                // Longer animation duration
+                particle.style.animationDuration = (Math.random() * 8 + 10) + 's';
+                                
+                // Lower opacity
+                particle.style.opacity = Math.random() * 0.6 + 0.2;
+                                
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Simple Copyright Hover Effect
+        const copyrightText = document.getElementById('copyright-text');
+        copyrightText.addEventListener('mouseenter', () => {
+            copyrightText.style.transform = 'scale(1.05)';
+        });
+        copyrightText.addEventListener('mouseleave', () => {
+            copyrightText.style.transform = 'scale(1)';
+        });
+
+        // Initialize particles when page loads
+        window.addEventListener('load', () => {
+            createParticles();
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add click-to-call functionality
+        const phoneLink = document.querySelector('a[href^="tel:"]');
+        if (phoneLink) {
+            phoneLink.addEventListener('click', function(e) {
+                if (!navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/)) {
+                    e.preventDefault();
+                    alert('Call: +213 696331367');
+                }
+            });
+        }
+
+        // Reduced Service cards hover effects
+        const serviceCards = document.querySelectorAll('.service-card');
+        serviceCards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-4px) scale(1.01)'; // Reduced effect
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // Reduced Social media link hover effects
+        const socialLinks = document.querySelectorAll('[class*="social-"]');
+        socialLinks.forEach(link => {
+            link.addEventListener('mouseenter', () => {
+                link.style.transform = 'scale(1.1) rotate(2deg)'; // Reduced rotation
+            });
+            link.addEventListener('mouseleave', () => {
+                link.style.transform = 'scale(1) rotate(0deg)';
+            });
+        });
+    </script>
+</body>
+</html>

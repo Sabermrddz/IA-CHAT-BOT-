@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .result { margin: 10px 0; padding: 10px; border: 1px solid #ccc; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>API Connection Test</h1>
+    
+    <button onclick="testLivePostsAPI()">Test Live Posts API</button>
+    <button onclick="testChatAI()">Test Chat AI</button>
+    
+    <div id="results"></div>
+
+    <script>
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        function addResult(message, isSuccess = true) {
+            const resultsDiv = document.getElementById('results');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `result ${isSuccess ? 'success' : 'error'}`;
+            resultDiv.textContent = message;
+            resultsDiv.appendChild(resultDiv);
+        }
+
+        async function testLivePostsAPI() {
+            try {
+                addResult('Testing Live Posts API...', true);
+                
+                const csrfToken = getCookie('csrftoken');
+                addResult(`CSRF Token: ${csrfToken ? 'Found' : 'Not found'}`, true);
+                
+                const response = await fetch('/api/live-posts/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    }
+                });
+                
+                addResult(`Response Status: ${response.status}`, true);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    addResult(`Success! Found ${data.articles ? data.articles.length : 0} articles`, true);
+                    addResult(`Response: ${JSON.stringify(data, null, 2)}`, true);
+                } else {
+                    addResult(`Error: ${response.status} ${response.statusText}`, false);
+                }
+            } catch (error) {
+                addResult(`Error: ${error.message}`, false);
+            }
+        }
+
+        async function testChatAI() {
+            try {
+                addResult('Testing Chat AI API...', true);
+                
+                const csrfToken = getCookie('csrftoken');
+                addResult(`CSRF Token: ${csrfToken ? 'Found' : 'Not found'}`, true);
+                
+                const response = await fetch('/chat-ai/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
+                    body: JSON.stringify({
+                        message: 'Hello',
+                        conversation_history: [],
+                        is_new_chat: true
+                    })
+                });
+                
+                addResult(`Response Status: ${response.status}`, true);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    addResult(`Success! AI Response: ${data.response || 'No response'}`, true);
+                    addResult(`Response: ${JSON.stringify(data, null, 2)}`, true);
+                } else {
+                    addResult(`Error: ${response.status} ${response.statusText}`, false);
+                }
+            } catch (error) {
+                addResult(`Error: ${error.message}`, false);
+            }
+        }
+    </script>
+</body>
+</html> 

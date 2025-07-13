@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inspair.Health - Daily Posts Enhanced</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Custom Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+        @keyframes gradientShift {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        @keyframes particleFloat {
+            0%, 100% {
+                transform: translateY(0px) translateX(0px);
+                opacity: 0.6;
+            }
+            33% {
+                transform: translateY(-20px) translateX(10px);
+                opacity: 0.8;
+            }
+            66% {
+                transform: translateY(-10px) translateX(-10px);
+                opacity: 0.7;
+            }
+        }
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        @keyframes wave {
+            0%, 100% {
+                transform: translateX(-100%);
+            }
+            50% {
+                transform: translateX(100%);
+            }
+        }
+        @keyframes glow {
+            0%, 100% {
+                box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+            }
+            50% {
+                box-shadow: 0 0 25px rgba(147, 51, 234, 0.3);
+            }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .animate-fadeInUp {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        .animate-slideDown {
+            animation: slideDown 0.3s ease-out forwards;
+        }
+        .animate-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+        .animate-gradient {
+            animation: gradientShift 6s ease-in-out infinite;
+        }
+        .animate-particle {
+            animation: particleFloat 12s ease-in-out infinite;
+        }
+        .animate-rotate {
+            animation: rotate 25s linear infinite;
+        }
+        .animate-wave {
+            animation: wave 8s ease-in-out infinite;
+        }
+        .animate-glow {
+            animation: glow 4s ease-in-out infinite;
+        }
+
+
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+        .delay-500 { animation-delay: 0.5s; }
+        .delay-600 { animation-delay: 0.6s; }
+        .delay-1000 { animation-delay: 1s; }
+        .delay-2000 { animation-delay: 2s; }
+        .delay-3000 { animation-delay: 3s; }
+        .delay-4000 { animation-delay: 4s; }
+        .delay-5000 { animation-delay: 5s; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1f2937;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #ffffff, #9ca3af);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #f3f4f6, #6b7280);
+        }
+
+        /* Smooth transitions */
+        * {
+            transition: all 0.3s ease;
+        }
+
+        /* Hero image container */
+        .hero-image {
+            position: absolute;
+            inset: 0;
+            transition: opacity 0.7s ease-in-out;
+        }
+        .hero-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to right, rgba(0,0,0,0.6), rgba(0,0,0,0.4), rgba(0,0,0,0.5));
+        }
+
+        /* Enhanced Service Card Styles */
+        .service-card {
+            position: relative;
+            transition: all 0.5s ease;
+            background: linear-gradient(135deg, rgba(31, 41, 55, 0.8), rgba(17, 24, 39, 0.8), rgba(0, 0, 0, 0.8));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(75, 85, 99, 0.5);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), transparent, rgba(147, 51, 234, 0.1));
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            border-radius: 12px;
+        }
+        .service-card:hover::before {
+            opacity: 1;
+        }
+        .service-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border-color: rgba(156, 163, 175, 0.5);
+        }
+        .service-card-top-accent {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(to right, #60a5fa, #ffffff, #a855f7);
+        }
+
+        /* Much Darker Professional Services Background */
+        .services-section {
+            position: relative;
+            background: linear-gradient(135deg, #000000, #0a0a0a, #050505, #111111, #000000);
+            background-size: 400% 400%;
+            animation: gradientShift 10s ease-in-out infinite;
+        }
+        .services-particles {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+        }
+        .particle {
+            position: absolute;
+            background: linear-gradient(45deg, rgba(59, 130, 246, 0.4), rgba(147, 51, 234, 0.4));
+            border-radius: 50%;
+            pointer-events: none;
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+        }
+        .services-geometric {
+            position: absolute;
+            inset: 0;
+            opacity: 0.25;
+        }
+        .geometric-shape {
+            position: absolute;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: linear-gradient(45deg, rgba(59, 130, 246, 0.1), rgba(147, 51, 234, 0.1));
+            backdrop-filter: blur(3px);
+        }
+        .services-overlay {
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(147, 51, 234, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 60%, rgba(6, 182, 212, 0.1) 0%, transparent 50%);
+        }
+        .services-waves {
+            position: absolute;
+            inset: 0;
+            opacity: 0.15;
+        }
+        .wave {
+            position: absolute;
+            width: 200%;
+            height: 80px;
+            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.2), transparent);
+            transform: translateX(-100%);
+        }
+
+        /* Floating orbs - reduced visibility */
+        .floating-orb {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.3), rgba(147, 51, 234, 0.2));
+            filter: blur(3px);
+            animation: particleFloat 15s ease-in-out infinite;
+        }
+
+        /* Button enhancements */
+        .btn-gradient {
+            background: linear-gradient(to right, #ffffff, #f3f4f6);
+            color: #000000;
+        }
+        .btn-gradient:hover {
+            background: linear-gradient(to right, #f3f4f6, #ffffff);
+            transform: scale(1.05);
+        }
+
+        /* Text gradient */
+        .text-gradient {
+            background: linear-gradient(to right, #ffffff, #93c5fd, #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Navigation underline effect */
+        .nav-link {
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(to right, #ffffff, #d1d5db);
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+
+        /* Post detail styles */
+        .post-detail {
+            display: none;
+        }
+        .post-detail.active {
+            display: block;
+        }
+        .post-list.hidden {
+            display: none;
+        }
+
+        /* Loading spinner */
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid white;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+
+
+        /* Share button hover effects */
+        .share-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Enhanced prose styles for post content */
+        .prose {
+            max-width: none;
+        }
+        .prose h2 {
+            color: #ffffff;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #d1d5db;
+            line-height: 1.7;
+            margin-bottom: 1rem;
+        }
+        .prose ul {
+            color: #d1d5db;
+            margin: 1rem 0;
+        }
+        .prose li {
+            margin: 0.5rem 0;
+        }
+        .prose strong {
+            color: #ffffff;
+            font-weight: 600;
+        }
+        .prose blockquote {
+            border-left: 4px solid #60a5fa;
+            padding-left: 1rem;
+            margin: 2rem 0;
+            font-style: italic;
+            color: #93c5fd;
+        }
+        .prose cite {
+            display: block;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: #9ca3af;
+        }
+
+        /* Toast notification styles */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            z-index: 1000;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+        .toast.show {
+            transform: translateX(0);
+        }
+    </style>
+</head>
+<body class="bg-black text-white">
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <span id="toast-message"></span>
+    </div>
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed top-0 w-full z-50 transition-all duration-500 bg-black/90 backdrop-blur-md border-b border-gray-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 group">
+                        <a href="/">
+                            <h1 class="text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-300">
+                                Inspair.Health
+                            </h1>
+                        </a>
+                    </div>
+                </div>
+                <!-- Desktop Navigation -->
+                <div class="hidden md:block">
+                    <div class="flex items-center space-x-8">
+                        <a href="{% url 'clinic:home' %}" class="nav-link text-gray-400 hover:text-white">Home</a>
+                        <a href="{% url 'clinic:chat_box' %}" class="nav-link text-gray-400 hover:text-white">AI Chat</a>
+                        <a href="{% url 'clinic:daily_posts' %}" class="nav-link active text-white font-medium">Daily Posts</a>
+                        <a href="{% url 'clinic:about' %}" class="nav-link text-gray-400 hover:text-white">About</a>
+                        <a href="{% url 'clinic:contact' %}" class="nav-link text-gray-400 hover:text-white">Contact</a>
+                    </div>
+                </div>
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <button id="mobile-menu-btn" class="hover:bg-gray-800 text-white p-2 rounded-md">
+                        <i id="menu-icon" class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            <!-- Mobile Navigation -->
+            <div id="mobile-menu" class="md:hidden hidden animate-slideDown">
+                <div class="px-2 pt-2 pb-3 space-y-1 bg-black/95 backdrop-blur-xl rounded-lg mt-2 shadow-xl border border-gray-800">
+                    <a href="{% url 'clinic:home' %}" class="block px-3 py-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-md">Home</a>
+                    <a href="{% url 'clinic:chat_box' %}" class="block px-3 py-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-md">AI Chat</a>
+                    <a href="{% url 'clinic:daily_posts' %}" class="block px-3 py-2 text-white font-medium bg-gray-800 rounded-md">Daily Posts</a>
+                    <a href="{% url 'clinic:about' %}" class="block px-3 py-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-md">About</a>
+                    <a href="{% url 'clinic:contact' %}" class="block px-3 py-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-md">Contact</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- Main Content -->
+    <main class="min-h-screen bg-black text-white pt-24 pb-20">
+        <!-- Posts List View -->
+        <div id="post-list" class="post-list">
+            <!-- Hero Section -->
+            <section class="relative py-16 overflow-hidden bg-gradient-to-b from-black via-gray-900 to-gray-800">
+                <!-- Background Elements -->
+                <div class="absolute inset-0 z-0">
+                    <div class="absolute inset-0 bg-gradient-to-r from-black via-gray-900 to-black opacity-90"></div>
+                    <div class="absolute inset-0 opacity-30" style="background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.2) 1px, transparent 0); background-size: 40px 40px;"></div>
+                    <!-- Floating shapes -->
+                    <div class="floating-shape absolute animate-pulse" style="width: 160px; height: 160px; background: #2563eb; top: 40px; left: 40px; border-radius: 50%; filter: blur(40px);"></div>
+                    <div class="floating-shape absolute animate-pulse delay-1000" style="width: 128px; height: 128px; background: #7c3aed; top: 80px; right: 80px; border-radius: 50%; filter: blur(40px);"></div>
+                </div>
+                <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                    <h1 class="text-4xl md:text-6xl font-bold text-white mb-6 animate-fadeInUp drop-shadow-lg">
+                        Daily Health Insights
+                    </h1>
+                    <p class="text-xl md:text-2xl text-gray-200 mb-8 animate-fadeInUp delay-200 max-w-3xl mx-auto">
+                        Expert-curated medical content, wellness tips, and health news updated daily for your wellbeing
+                    </p>
+                </div>
+            </section>
+            <!-- TABS FOR OFFLINE/LIVE -->
+            <div class="flex justify-center mt-8 mb-8">
+                <button id="tab-offline" class="px-8 py-3 text-lg font-semibold rounded-t-lg focus:outline-none bg-white text-black shadow-md hidden">Offline</button>
+                <button id="tab-live" class="px-8 py-3 text-lg font-semibold rounded-t-lg focus:outline-none bg-white text-black shadow-md">Load Posts</button>
+            </div>
+            <!-- LIVE POSTS SECTION -->
+            <section id="live-section" class="services-section py-8 overflow-hidden">
+                <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <h2 class="text-3xl font-bold text-white mb-8 text-center">Live Posts</h2>
+                    <!-- Refresh Button -->
+                    <div class="flex justify-end mb-4">
+                        <button id="refresh-live-posts" class="px-5 py-2 rounded-lg bg-white text-black font-semibold shadow hover:bg-gray-200 transition flex items-center gap-2">
+                            <i class="fas fa-sync-alt mr-2" id="refresh-icon"></i>Refresh
+                        </button>
+                    </div>
+                    <!-- Loading state -->
+                    <div id="loading-state" class="flex flex-col items-center justify-center py-20">
+                        <div class="spinner mb-4"></div>
+                        <p class="text-xl text-gray-300">Loading posts...</p>
+                    </div>
+                    <!-- No posts found state -->
+                    <div id="no-posts-state" class="text-center py-20 hidden">
+                        <h3 class="text-2xl font-bold text-white mb-4">No live posts found</h3>
+                        <p class="text-gray-300">Try again later</p>
+                    </div>
+                    <!-- Live posts grid -->
+                    <div id="live-posts-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 hidden"></div>
+                </div>
+            </section>
+        </div>
+        <!-- Post Detail View -->
+        <div id="post-detail" class="post-detail">
+            <!-- Back button -->
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+                <button id="back-to-posts" class="flex items-center text-gray-400 hover:text-white transition-colors duration-300">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    <span>Back to posts</span>
+                </button>
+            </div>
+            <!-- Post header -->
+            <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+                <div class="absolute inset-0 bg-gradient-to-r from-blue-900/20 via-purple-900/20 to-cyan-900/20 rounded-xl blur-3xl opacity-30"></div>
+                <div class="relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-8 shadow-xl">
+                    <div class="flex flex-wrap gap-4 mb-4 text-sm">
+                        <span id="post-category" class="bg-white/10 backdrop-blur-md rounded-full px-4 py-1 text-white border border-white/20 flex items-center">
+                            <i class="fas fa-tag mr-2"></i>
+                            Category
+                        </span>
+                        <span id="post-date" class="bg-white/10 backdrop-blur-md rounded-full px-4 py-1 text-white border border-white/20 flex items-center">
+                            <i class="fas fa-calendar mr-2"></i>
+                            Date
+                        </span>
+                        <span id="post-read-time" class="bg-white/10 backdrop-blur-md rounded-full px-4 py-1 text-white border border-white/20 flex items-center">
+                            <i class="fas fa-clock mr-2"></i>
+                            Read time
+                        </span>
+                        <span id="post-author" class="bg-white/10 backdrop-blur-md rounded-full px-4 py-1 text-white border border-white/20 flex items-center">
+                            <i class="fas fa-user mr-2"></i>
+                            Author
+                        </span>
+                    </div>
+                    <h1 id="post-title" class="text-3xl md:text-4xl font-bold text-white mb-6">Post Title</h1>
+                    <p id="post-excerpt" class="text-xl text-gray-300 leading-relaxed">Post excerpt</p>
+                </div>
+            </div>
+            <!-- Featured image -->
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+                <div class="relative rounded-xl overflow-hidden h-80 md:h-96 lg:h-[500px] shadow-2xl">
+                    <img id="post-image" src="https://placehold.co/1000x500/1a1a1a/ffffff?text=Post+Image" alt="Post featured image" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                </div>
+            </div>
+            <!-- Post content -->
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
+                <div id="post-content" class="prose prose-lg prose-invert max-w-none">
+                    <!-- Post content will be dynamically inserted here -->
+                </div>
+            </div>
+            <!-- Share buttons -->
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
+                <div class="border-t border-b border-gray-800 py-6">
+                    <div class="flex items-center justify-between">
+                        <div class="text-gray-300">Share this article:</div>
+                        <div class="flex space-x-4">
+                            <button id="share-facebook" class="share-btn w-10 h-10 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/20 transition-all duration-300 cursor-pointer group border border-gray-600 hover:border-gray-400 hover:scale-110">
+                                <i class="fab fa-facebook-f text-xl text-gray-300 group-hover:text-white transition-colors duration-300"></i>
+                            </button>
+                            <button id="share-twitter" class="share-btn w-10 h-10 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/20 transition-all duration-300 cursor-pointer group border border-gray-600 hover:border-gray-400 hover:scale-110">
+                                <i class="fab fa-twitter text-xl text-gray-300 group-hover:text-white transition-colors duration-300"></i>
+                            </button>
+                            <button id="share-linkedin" class="share-btn w-10 h-10 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/20 transition-all duration-300 cursor-pointer group border border-gray-600 hover:border-gray-400 hover:scale-110">
+                                <i class="fab fa-linkedin-in text-xl text-gray-300 group-hover:text-white transition-colors duration-300"></i>
+                            </button>
+                            <button id="share-copy" class="share-btn w-10 h-10 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/20 transition-all duration-300 cursor-pointer group border border-gray-600 hover:border-gray-400 hover:scale-110">
+                                <i class="fas fa-share-alt text-xl text-gray-300 group-hover:text-white transition-colors duration-300"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Related posts -->
+            <div id="related-posts-container" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
+                <h2 class="text-3xl font-bold text-white mb-8">Related Posts</h2>
+                <div id="related-posts" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Related posts will be dynamically inserted here -->
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- Enhanced Footer -->
+    <footer class="relative overflow-hidden">
+        <!-- Enhanced Background -->
+        <div class="absolute inset-0 bg-gradient-to-b from-gray-800 via-gray-900 to-black"></div>
+        <!-- Animated background elements -->
+        <div class="absolute inset-0 opacity-20">
+            <div class="floating-shape absolute animate-pulse" style="width: 160px; height: 160px; background: #2563eb; top: 40px; left: 40px; border-radius: 50%; filter: blur(40px);"></div>
+            <div class="floating-shape absolute animate-pulse delay-1000" style="width: 128px; height: 128px; background: #7c3aed; top: 80px; right: 80px; border-radius: 50%; filter: blur(40px);"></div>
+            <div class="floating-shape absolute animate-pulse delay-2000" style="width: 144px; height: 144px; background: #06b6d4; bottom: 80px; left: 25%; border-radius: 50%; filter: blur(40px);"></div>
+            <div class="floating-shape absolute animate-pulse delay-3000" style="width: 112px; height: 112px; background: #ec4899; bottom: 40px; right: 33.333333%; border-radius: 50%; filter: blur(40px);"></div>
+        </div>
+        <!-- Mesh gradient overlay -->
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-purple-900/20 to-cyan-900/20"></div>
+        <!-- Subtle pattern -->
+        <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.2) 1px, transparent 0); background-size: 40px 40px;"></div>
+        <!-- Top border gradient -->
+        <div class="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-blue-400 to-transparent"></div>
+        <div class="relative z-10 text-white py-20">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div id="footer-content-grid" class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+                    <!-- Company Info -->
+                    <div class="md:col-span-2 space-y-6 opacity-0 translate-y-10">
+                        <div>
+                            <h3 class="text-4xl font-bold text-gradient mb-4">
+                                Inspair.Health
+                            </h3>
+                            <p class="text-gray-300 leading-relaxed text-lg">
+                                Empowering your health journey with AI-powered insights and professional medical support. Join thousands of users who trust us with their wellness.
+                            </p>
+                        </div>
+                        <!-- Social Media Icons with Real Links -->
+                        <div>
+                            <h4 class="text-lg font-semibold mb-4 text-gray-200">Connect With Us</h4>
+                            <div class="flex space-x-4 mb-6">
+                                <a href="https://www.facebook.com/sab.er.mrd.71003" target="_blank" rel="noopener noreferrer" class="social-facebook w-12 h-12 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/20 transition-all duration-300 cursor-pointer group border border-gray-600 hover:border-gray-400 hover:scale-110">
+                                    <i class="fab fa-facebook-f text-2xl text-gray-300 group-hover:text-white transition-colors duration-300"></i>
+                                </a>
+                                <a href="https://www.instagram.com/saber_mrd_?igsh=NXIyM2kzbTNxYnhl" target="_blank" rel="noopener noreferrer" class="social-instagram w-12 h-12 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/20 transition-all duration-300 cursor-pointer group border border-gray-600 hover:border-gray-400 hover:scale-110">
+                                    <i class="fab fa-instagram text-2xl text-gray-300 group-hover:text-white transition-colors duration-300"></i>
+                                </a>
+                                <a href="https://t.me/InspaireDin" target="_blank" rel="noopener noreferrer" class="social-telegram w-12 h-12 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/20 transition-all duration-300 cursor-pointer group border border-gray-600 hover:border-gray-400 hover:scale-110">
+                                    <i class="fab fa-telegram-plane text-2xl text-gray-300 group-hover:text-white transition-colors duration-300"></i>
+                                </a>
+                                <a href="https://x.com/sabermourad7" target="_blank" rel="noopener noreferrer" class="social-twitter w-12 h-12 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/20 transition-all duration-300 cursor-pointer group border border-gray-600 hover:border-gray-400 hover:scale-110">
+                                    <i class="fab fa-twitter text-2xl text-gray-300 group-hover:text-white transition-colors duration-300"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <!-- Trust Badges -->
+                        <div>
+                            <h4 class="text-lg font-semibold mb-4 text-gray-200">Certifications</h4>
+                            <div class="flex space-x-4">
+                                <div class="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/20 transition-all duration-300 cursor-pointer group border border-gray-600 hover:border-gray-400 hover:scale-110">
+                                    <i class="fas fa-shield-alt text-xl text-gray-300 group-hover:text-white transition-colors duration-300"></i>
+                                </div>
+                                <div class="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/20 transition-all duration-300 cursor-pointer group border border-gray-600 hover:border-gray-400 hover:scale-110">
+                                    <i class="fas fa-stethoscope text-xl text-gray-300 group-hover:text-white transition-colors duration-300"></i>
+                                </div>
+                                <div class="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/20 transition-all duration-300 cursor-pointer group border border-gray-600 hover:border-gray-400 hover:scale-110">
+                                    <i class="fas fa-brain text-xl text-gray-300 group-hover:text-white transition-colors duration-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Quick Links -->
+                    <div class="opacity-0 translate-y-10">
+                        <h4 class="text-xl font-semibold mb-6 text-white">Quick Links</h4>
+                        <div class="space-y-4">
+                            <a href="{% url 'clinic:home' %}" class="block text-gray-400 hover:text-white transition-all duration-300 hover:translate-x-2 hover:text-blue-300 text-lg">Home</a>
+                            <a href="{% url 'clinic:chat_box' %}" class="block text-gray-400 hover:text-white transition-all duration-300 hover:translate-x-2 hover:text-blue-300 text-lg">AI Chat</a>
+                            <a href="{% url 'clinic:daily_posts' %}" class="block text-gray-400 hover:text-white transition-all duration-300 hover:translate-x-2 hover:text-blue-300 text-lg">Daily Posts</a>
+                            <a href="{% url 'clinic:about' %}" class="block text-gray-400 hover:text-white transition-all duration-300 hover:translate-x-2 hover:text-blue-300 text-lg">About</a>
+                            <a href="{% url 'clinic:contact' %}" class="block text-gray-400 hover:text-white transition-all duration-300 hover:translate-x-2 hover:text-blue-300 text-lg">Contact</a>
+                        </div>
+                    </div>
+                    <!-- Contact Info -->
+                    <div class="opacity-0 translate-y-10">
+                        <h4 class="text-xl font-semibold mb-6 text-white">Get In Touch</h4>
+                        <div class="space-y-4">
+                            <div class="flex items-center space-x-3 text-gray-400 hover:text-white transition-colors duration-300 group">
+                                <i class="fas fa-envelope w-5 h-5 group-hover:text-blue-400"></i>
+                                <a href="mailto:sabermrddz@gmail.com" class="text-lg">sabermrddz@gmail.com</a>
+                            </div>
+                            <div class="flex items-center space-x-3 text-gray-400 hover:text-white transition-colors duration-300 group">
+                                <i class="fas fa-phone w-5 h-5 group-hover:text-green-400"></i>
+                                <a href="tel:+213696331367" class="text-lg">+213 696331367</a>
+                            </div>
+                            <div class="flex items-center space-x-3 text-gray-400">
+                                <i class="fas fa-clock w-5 h-5 text-yellow-400"></i>
+                                <span class="text-lg">24/7 Medical Support</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Simplified Copyright Section -->
+                <div class="border-t border-gray-700/50 pt-8">
+                    <div class="copyright-simple" id="copyright-text">
+                        © 2025 Inspair.Health. All rights reserved. | HIPAA Compliant Healthcare Platform
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script>
+        // Mock data for posts (used for Offline tab and related posts)
+        const posts = [
+            {
+                id: "1",
+                title: "Understanding the Benefits of Intermittent Fasting",
+                excerpt: "Discover how intermittent fasting can improve metabolic health, enhance cognitive function, and promote longevity.",
+                content: `
+                    <p>Intermittent fasting has gained significant attention in recent years as a powerful tool for improving health and longevity. This eating pattern involves cycling between periods of eating and fasting, and research shows it can have profound effects on our metabolism and overall wellbeing.</p>
+                    <h2>Key Benefits of Intermittent Fasting</h2>
+                    <ul>
+                        <li><strong>Improved insulin sensitivity:</strong> Helps regulate blood sugar levels and reduce diabetes risk</li>
+                        <li><strong>Enhanced autophagy:</strong> Cellular cleanup process that removes damaged proteins</li>
+                        <li><strong>Weight management:</strong> Natural calorie restriction and improved fat burning</li>
+                        <li><strong>Brain health:</strong> Increased production of brain-derived neurotrophic factor (BDNF)</li>
+                    </ul>
+                    <h2>Getting Started Safely</h2>
+                    <p>Begin with a 12-hour fasting window and gradually extend to 16 hours. Always consult with a healthcare provider before starting any fasting regimen, especially if you have underlying health conditions.</p>
+                    <blockquote>
+                        "Intermittent fasting is not just about when you eat, but how it transforms your body's relationship with food and energy."
+                        <cite>— Dr. Sarah Johnson, Metabolic Health Specialist</cite>
+                    </blockquote>
+                `,
+                category: "Nutrition",
+                author: "Dr. Sarah Johnson",
+                date: "January 15, 2025",
+                readTime: "5 min read",
+                imageUrl: "https://placehold.co/600x400/1a1a1a/ffffff?text=Intermittent+Fasting+Clock",
+            },
+            {
+                id: "2",
+                title: "The Science Behind Mindfulness Meditation",
+                excerpt: "Learn how regular mindfulness practice can reduce stress, improve focus, and enhance overall mental wellbeing.",
+                content: `
+                    <p>Mindfulness meditation has been practiced for thousands of years, but modern neuroscience is now revealing the remarkable ways it changes our brains and improves our mental health.</p>
+                    <h2>Neurological Benefits</h2>
+                    <ul>
+                        <li><strong>Reduced amygdala reactivity:</strong> Less emotional reactivity to stress</li>
+                        <li><strong>Increased prefrontal cortex activity:</b> Better decision-making and emotional regulation</li>
+                        <li><strong>Enhanced default mode network:</strong> Improved self-awareness and introspection</li>
+                        <li><strong>Increased gray matter density:</strong> Structural brain improvements in key areas</li>
+                    </ul>
+                    <h2>Simple Meditation Techniques</h2>
+                    <p>Start with just 5 minutes daily of focused breathing. Sit comfortably, close your eyes, and simply observe your breath without trying to change it. When your mind wanders, gently return attention to your breathing.</p>
+                    <blockquote>
+                        "Regular mindfulness practice has been shown to significantly reduce cortisol levels and improve emotional regulation in clinical studies."
+                        <cite>— Dr. Michael Chen, Neuroscientist</cite>
+                    </blockquote>
+                `,
+                category: "Mental Health",
+                author: "Dr. Michael Chen",
+                date: "January 14, 2025",
+                readTime: "7 min read",
+                imageUrl: "https://placehold.co/600x400/1a1a1a/ffffff?text=Meditation+Brain+Waves",
+            },
+            {
+                id: "3",
+                title: "Latest Breakthroughs in Cancer Treatment",
+                excerpt: "Explore the most promising recent developments in cancer therapy, including immunotherapy and targeted treatments.",
+                content: `
+                    <p>The landscape of cancer treatment is rapidly evolving with groundbreaking therapies that harness the body's own immune system and target specific molecular pathways.</p>
+                    <h2>Revolutionary Treatment Approaches</h2>
+                    <ul>
+                        <li><strong>CAR-T Cell Therapy:</strong> Genetically modified immune cells that target cancer</li>
+                        <li><strong>Checkpoint Inhibitors:</strong> Drugs that unleash the immune system against tumors</li>
+                        <li><strong>Precision Medicine:</strong> Treatments tailored to individual genetic profiles</li>
+                        <li><strong>Liquid Biopsies:</strong> Blood tests that detect circulating tumor DNA</li>
+                    </ul>
+                    <h2>Future Outlook</h2>
+                    <p>These advances are transforming cancer from a terminal diagnosis to a manageable chronic condition for many patients, with survival rates improving dramatically across multiple cancer types.</p>
+                    <blockquote>
+                        "The combination of immunotherapy with targeted molecular approaches represents a paradigm shift in how we approach cancer treatment."
+                        <cite>— Dr. Emily Rodriguez, Oncologist</cite>
+                    </blockquote>
+                `,
+                category: "Medical Research",
+                author: "Dr. Emily Rodriguez",
+                date: "January 13, 2025",
+                readTime: "10 min read",
+                imageUrl: "https://placehold.co/600x400/1a1a1a/ffffff?text=Cancer+Research+Lab",
+            },
+            {
+                id: "4",
+                title: "Optimizing Sleep Quality for Better Health",
+                excerpt: "Practical strategies to improve your sleep hygiene and enhance the quality of your rest for better overall health.",
+                content: `
+                    <p>Quality sleep is fundamental to physical health, mental wellbeing, and cognitive performance. Yet many people struggle with sleep issues that can be addressed through proper sleep hygiene.</p>
+                    <h2>Essential Sleep Hygiene Practices</h2>
+                    <ul>
+                        <li><strong>Consistent sleep schedule:</strong> Go to bed and wake up at the same time daily</li>
+                        <li><strong>Optimal sleep environment:</strong> Cool, dark, and quiet bedroom</li>
+                        <li><strong>Pre-sleep routine:</strong> Relaxing activities 1-2 hours before bed</li>
+                        <li><strong>Limit screen exposure:</strong> Avoid blue light 2 hours before sleep</li>
+                    </ul>
+                    <h2>The Science of Sleep Stages</h2>
+                    <p>Understanding REM and non-REM sleep cycles can help you optimize your sleep timing and wake up feeling more refreshed.</p>
+                    <blockquote>
+                        "Quality sleep is as essential to health as nutrition and exercise, yet it remains one of the most underappreciated aspects of wellness."
+                        <cite>— Dr. James Wilson, Sleep Specialist</cite>
+                    </blockquote>
+                `,
+                category: "Sleep",
+                author: "Dr. James Wilson",
+                date: "January 12, 2025",
+                readTime: "6 min read",
+                imageUrl: "https://placehold.co/600x400/1a1a1a/ffffff?text=Sleep+Cycle+Chart",
+            },
+            {
+                id: "5",
+                title: "The Role of Gut Health in Immune Function",
+                excerpt: "Understanding how your gut microbiome influences your immune system and overall health outcomes.",
+                content: `
+                    <p>The gut microbiome, consisting of trillions of microorganisms, plays a crucial role in immune function, inflammation regulation, and overall health.</p>
+                    <h2>Gut-Immune Connection</h2>
+                    <ul>
+                        <li><strong>70% of immune cells:</strong> Located in gut-associated lymphoid tissue</li>
+                        <li><strong>Microbiome diversity:</strong> Greater diversity linked to better health outcomes</li>
+                        <li><strong>Short-chain fatty acids:</strong> Beneficial compounds produced by gut bacteria</li>
+                        <li><strong>Intestinal barrier:</strong> First line of defense against pathogens</li>
+                    </ul>
+                    <h2>Supporting Gut Health</h2>
+                    <p>Include fermented foods, prebiotic fibers, and diverse plant foods in your diet while limiting processed foods and unnecessary antibiotics.</p>
+                    <blockquote>
+                        "The gut microbiome is essentially our second brain, with profound implications for immunity, inflammation, and even mental health."
+                        <cite>— Dr. Lisa Thompson, Gastroenterologist</cite>
+                    </blockquote>
+                `,
+                category: "Nutrition",
+                author: "Dr. Lisa Thompson",
+                date: "January 11, 2025",
+                readTime: "8 min read",
+                imageUrl: "https://placehold.co/600x400/1a1a1a/ffffff?text=Gut+Microbiome+Illustration",
+            },
+            {
+                id: "6",
+                title: "Effective Strategies for Managing Chronic Pain",
+                excerpt: "Evidence-based approaches to managing chronic pain, including both medical and lifestyle interventions.",
+                content: `
+                    <p>Chronic pain affects millions worldwide and requires a comprehensive, multimodal approach for effective management.</p>
+                    <h2>Comprehensive Pain Management</h2>
+                    <ul>
+                        <li><strong>Physical therapy:</strong> Targeted exercises and movement therapy</li>
+                        <li><strong>Cognitive behavioral therapy:</strong> Addressing pain-related thoughts and behaviors</li>
+                        <li><strong>Mindfulness practices:</strong> Meditation and body awareness techniques</li>
+                        <li><strong>Medical interventions:</strong> Appropriate use of medications and procedures</li>
+                    </ul>
+                    <h2>Lifestyle Modifications</h2>
+                    <p>Regular exercise, stress management, adequate sleep, and social support are crucial components of chronic pain management.</p>
+                    <blockquote>
+                        "A multimodal approach to chronic pain that addresses both physical and psychological factors yields the best outcomes for patients."
+                        <cite>— Dr. Robert Kim, Pain Management Specialist</cite>
+                    </blockquote>
+                `,
+                category: "Pain Management",
+                author: "Dr. Robert Kim",
+                date: "January 10, 2025",
+                readTime: "9 min read",
+                imageUrl: "https://placehold.co/600x400/1a1a1a/ffffff?text=Pain+Management+Therapy",
+            },
+            {
+                id: "7",
+                title: "Understanding Anxiety Disorders and Treatment Options",
+                excerpt: "A comprehensive guide to different types of anxiety disorders and the most effective treatment approaches.",
+                content: `
+                    <p>Anxiety disorders are among the most common mental health conditions, affecting millions of people worldwide. Understanding the different types and treatment options is crucial for effective management.</p>
+                    <h2>Types of Anxiety Disorders</h2>
+                    <ul>
+                        <li><strong>Generalized Anxiety Disorder:</strong> Persistent worry about various life aspects</li>
+                        <li><strong>Panic Disorder:</strong> Recurrent panic attacks and fear of future attacks</li>
+                        <li><strong>Social Anxiety:</strong> Fear of social situations and judgment</li>
+                        <li><strong>Specific Phobias:</strong> Intense fear of specific objects or situations</li>
+                    </ul>
+                    <h2>Evidence-Based Treatments</h2>
+                    <p>Cognitive Behavioral Therapy (CBT), exposure therapy, and when appropriate, medication can significantly improve anxiety symptoms and quality of life.</p>
+                    <blockquote>
+                        "Early intervention with evidence-based treatments can significantly improve outcomes for patients with anxiety disorders."
+                        <cite>— Dr. Jennifer Adams, Clinical Psychologist</cite>
+                    </blockquote>
+                `,
+                category: "Mental Health",
+                author: "Dr. Jennifer Adams",
+                date: "January 9, 2025",
+                readTime: "11 min read",
+                imageUrl: "https://placehold.co/600x400/1a1a1a/ffffff?text=Anxiety+Brain+Pathways",
+            },
+            {
+                id: "8",
+                title: "The Impact of Regular Exercise on Brain Health",
+                excerpt: "How physical activity affects cognitive function, mood, and neurological health throughout the lifespan.",
+                content: `
+                    <p>Regular physical exercise is one of the most powerful interventions for maintaining and improving brain health across all ages.</p>
+                    <h2>Exercise and Neuroplasticity</h2>
+                    <ul>
+                        <li><strong>BDNF production:</strong> Exercise increases brain-derived neurotrophic factor</li>
+                        <li><strong>Neurogenesis:</strong> New brain cell formation in the hippocampus</li>
+                        <li><strong>Improved blood flow:</strong> Enhanced oxygen and nutrient delivery to the brain</li>
+                        <li><strong>Reduced inflammation:</strong> Lower levels of inflammatory markers</li>
+                    </ul>
+                    <h2>Optimal Exercise Prescription</h2>
+                    <p>Aim for 150 minutes of moderate aerobic activity or 75 minutes of vigorous activity weekly, combined with strength training exercises.</p>
+                    <blockquote>
+                        "Regular physical activity is one of the most powerful interventions we have for maintaining cognitive health as we age."
+                        <cite>— Dr. Thomas Wright, Exercise Physiologist</cite>
+                    </blockquote>
+                `,
+                category: "Fitness",
+                author: "Dr. Thomas Wright",
+                date: "January 8, 2025",
+                readTime: "7 min read",
+                imageUrl: "https://placehold.co/600x400/1a1a1a/ffffff?text=Exercise+Brain+Connection",
+            },
+            {
+                id: "9",
+                title: "Advances in Telemedicine and Digital Health",
+                excerpt: "Exploring how technology is transforming healthcare delivery and improving patient outcomes.",
+                content: `
+                    <p>Digital health technologies are revolutionizing healthcare delivery, making quality care more accessible and efficient than ever before.</p>
+                    <h2>Key Digital Health Innovations</h2>
+                    <ul>
+                        <li><strong>Remote monitoring:</strong> Wearable devices tracking vital signs</li>
+                        <li><strong>AI diagnostics:</strong> Machine learning for medical imaging analysis</li>
+                        <li><strong>Virtual consultations:</strong> Convenient access to healthcare providers</li>
+                        <li><strong>Digital therapeutics:</strong> App-based interventions for various conditions</li>
+                    </ul>
+                    <h2>Future of Healthcare</h2>
+                    <p>Integration of AI, IoT devices, and personalized medicine will continue to transform how we prevent, diagnose, and treat diseases.</p>
+                    <blockquote>
+                        "Digital health technologies are democratizing access to healthcare in unprecedented ways, particularly for underserved populations."
+                        <cite>— Dr. Sophia Martinez, Digital Health Expert</cite>
+                    </blockquote>
+                `,
+                category: "Healthcare Technology",
+                author: "Dr. Sophia Martinez",
+                date: "January 7, 2025",
+                readTime: "8 min read",
+                imageUrl: "https://placehold.co/600x400/1a1a1a/ffffff?text=Digital+Health+Technology",
+            },
+            {
+                id: "10",
+                title: "Heart Health: Prevention and Early Detection",
+                excerpt: "Essential strategies for maintaining cardiovascular health and recognizing early warning signs of heart disease.",
+                content: `
+                    <p>Cardiovascular disease remains the leading cause of death globally, but many cases are preventable through lifestyle modifications and early detection.</p>
+                    <h2>Heart-Healthy Lifestyle</h2>
+                    <ul>
+                        <li><strong>Regular exercise:</strong> 30 minutes of moderate activity most days</li>
+                        <li><strong>Balanced diet:</strong> Mediterranean-style eating pattern</li>
+                        <li><strong>Stress management:</strong> Techniques to reduce chronic stress</li>
+                        <li><strong>Quality sleep:</strong> 7-9 hours of restorative sleep nightly</li>
+                    </ul>
+                    <h2>Warning Signs to Watch</h2>
+                    <p>Chest pain, shortness of breath, fatigue, and irregular heartbeat should prompt immediate medical evaluation.</p>
+                    <blockquote>
+                        "Prevention is always better than treatment when it comes to cardiovascular health. Small daily choices make a big difference."
+                        <cite>— Dr. Maria Gonzalez, Cardiologist</cite>
+                    </blockquote>
+                `,
+                category: "Cardiology",
+                author: "Dr. Maria Gonzalez",
+                date: "January 6, 2025",
+                readTime: "6 min read",
+                imageUrl: "https://placehold.co/600x400/1a1a1a/ffffff?text=Heart+Health+Monitor",
+            },
+            {
+                id: "11",
+                title: "Diabetes Management in the Modern Era",
+                excerpt: "Latest approaches to diabetes care, including continuous glucose monitoring and personalized treatment plans.",
+                content: `
+                    <p>Diabetes management has evolved significantly with new technologies and treatment approaches that help patients achieve better glucose control and quality of life.</p>
+                    <h2>Modern Diabetes Tools</h2>
+                    <ul>
+                        <li><strong>Continuous glucose monitors:</strong> Real-time glucose tracking</li>
+                        <li><strong>Insulin pumps:</strong> Automated insulin delivery systems</li>
+                        <li><strong>Mobile apps:</strong> Carb counting and medication reminders</li>
+                        <li><strong>Telemedicine:</strong> Remote monitoring and consultations</li>
+                    </ul>
+                    <h2>Lifestyle Integration</h2>
+                    <p>Successful diabetes management requires balancing medication, diet, exercise, and stress management in a sustainable way.</p>
+                    <blockquote>
+                        "Modern diabetes technology empowers patients to take control of their condition like never before."
+                        <cite>— Dr. Ahmed Hassan, Endocrinologist</cite>
+                    </blockquote>
+                `,
+                category: "Endocrinology",
+                author: "Dr. Ahmed Hassan",
+                date: "January 5, 2025",
+                readTime: "9 min read",
+                imageUrl: "https://placehold.co/600x400/1a1a1a/ffffff?text=Diabetes+Glucose+Monitor",
+            },
+            {
+                id: "12",
+                title: "Women's Health: Hormonal Changes Through Life",
+                excerpt: "Understanding hormonal fluctuations from puberty through menopause and their impact on overall health.",
+                content: `
+                    <p>Women experience significant hormonal changes throughout their lives, each phase bringing unique health considerations and opportunities for optimization.</p>
+                    <h2>Key Life Stages</h2>
+                    <ul>
+                        <li><strong>Reproductive years:</strong> Menstrual cycle optimization and fertility</li>
+                        <li><strong>Pregnancy:</strong> Prenatal care and postpartum recovery</li>
+                        <li><strong>Perimenopause:</strong> Managing transitional symptoms</li>
+                        <li><strong>Menopause:</strong> Hormone replacement therapy considerations</li>
+                    </ul>
+                    <h2>Holistic Approach</h2>
+                    <p>Nutrition, exercise, stress management, and regular screening are essential for maintaining optimal health through all life stages.</p>
+                    <blockquote>
+                        "Understanding your body's hormonal patterns empowers you to make informed decisions about your health at every stage of life."
+                        <cite>— Dr. Rachel Foster, Women's Health Specialist</cite>
+                    </blockquote>
+                `,
+                category: "Women's Health",
+                author: "Dr. Rachel Foster",
+                date: "January 4, 2025",
+                readTime: "8 min read",
+                imageUrl: "https://placehold.co/600x400/1a1a1a/ffffff?text=Women+Health+Lifecycle",
+            },
+            {
+                id: "13",
+                title: "Pediatric Nutrition: Building Healthy Habits Early",
+                excerpt: "Essential nutrition guidelines for children and strategies to establish lifelong healthy eating patterns.",
+                content: `
+                    <p>Early childhood nutrition lays the foundation for lifelong health, growth, and development. Establishing healthy eating habits during these formative years is crucial.</p>
+                    <h2>Age-Appropriate Nutrition</h2>
+                    <ul>
+                        <li><strong>Infancy:</strong> Breastfeeding and introduction to solid foods</li>
+                        <li><strong>Toddlers:</strong> Balanced meals with variety and appropriate portions</li>
+                        <li><strong>School-age:</strong> Nutrient-dense foods to support growth and learning</li>
+                        <li><strong>Adolescence:</strong> Increased caloric needs and body image awareness</li>
+                    </ul>
+                    <h2>Creating Positive Food Relationships</h2>
+                    <p>Focus on family meals, involving children in food preparation, and modeling healthy eating behaviors.</p>
+                    <blockquote>
+                        "The eating habits we establish in childhood often persist into adulthood, making early nutrition education critical for lifelong health."
+                        <cite>— Dr. Kevin Park, Pediatric Nutritionist</cite>
+                    </blockquote>
+                `,
+                category: "Pediatrics",
+                author: "Dr. Kevin Park",
+                date: "January 3, 2025",
+                readTime: "7 min read",
+                imageUrl: "https://placehold.co/600x400/1a1a1a/ffffff?text=Child+Healthy+Eating",
+            },
+            {
+                id: "14",
+                title: "Aging Gracefully: Health Tips for Seniors",
+                excerpt: "Comprehensive strategies for maintaining physical and mental health as we age, focusing on independence and quality of life.",
+                content: `
+                    <p>Healthy aging involves maintaining physical function, mental acuity, and social connections while adapting to the natural changes that come with advancing years.</p>
+                    <h2>Pillars of Healthy Aging</h2>
+                    <ul>
+                        <li><strong>Physical activity:</strong> Strength, balance, and flexibility exercises</li>
+                        <li><strong>Cognitive engagement:</strong> Learning new skills and staying mentally active</li>
+                        <li><strong>Social connections:</strong> Maintaining relationships and community involvement</li>
+                        <li><strong>Preventive care:</strong> Regular screenings and health monitoring</li>
+                    </ul>
+                    <h2>Common Age-Related Concerns</h2>
+                    <p>Address falls prevention, medication management, and chronic disease management proactively.</p>
+                    <blockquote>
+                        "Aging is not about adding years to your life, but adding life to your years through healthy choices and active engagement."
+                        <cite>— Dr. Helen Chang, Geriatrician</cite>
+                    </blockquote>
+                `,
+                category: "Geriatrics",
+                author: "Dr. Helen Chang",
+                date: "January 2, 2025",
+                readTime: "10 min read",
+                imageUrl: "https://placehold.co/600x400/1a1a1a/ffffff?text=Senior+Active+Lifestyle",
+            },
+            {
+                id: "15",
+                title: "Mental Health in the Workplace",
+                excerpt: "Addressing workplace stress, burnout, and creating mentally healthy work environments for better productivity and wellbeing.",
+                content: `
+                    <p>Workplace mental health has become a critical concern as we recognize the significant impact of work environment on overall wellbeing and productivity.</p>
+                    <h2>Common Workplace Mental Health Issues</h2>
+                    <ul>
+                        <li><strong>Burnout:</strong> Chronic workplace stress leading to exhaustion</li>
+                        <li><strong>Anxiety:</strong> Performance pressure and job insecurity</li>
+                        <li><strong>Depression:</strong> Work-life imbalance and isolation</li>
+                        <li><strong>Stress:</strong> High demands and lack of control</li>
+                    </ul>
+                    <h2>Creating Supportive Environments</h2>
+                    <p>Employers can promote mental health through flexible work arrangements, mental health resources, and fostering open communication.</p>
+                    <blockquote>
+                        "A mentally healthy workplace is not just good for employees—it's good for business, leading to increased productivity and reduced turnover."
+                        <cite>— Dr. David Miller, Occupational Psychologist</cite>
+                    </blockquote>
+                `,
+                category: "Mental Health",
+                author: "Dr. David Miller",
+                date: "January 1, 2025",
+                readTime: "8 min read",
+                imageUrl: "https://placehold.co/600x400/1a1a1a/ffffff?text=Workplace+Mental+Health",
+            }
+        ];
+
+        // Function to fetch live posts from the Django backend
+        async function fetchLivePostsFromBackend() {
+            try {
+                const response = await fetch('/api/live-posts/', { method: 'POST' });
+                const data = await response.json();
+
+                console.log('Full response from /api/live-posts/:', data); // Log full response to browser console
+
+                if (!response.ok) {
+                    // If the response is not OK (e.g., 4xx or 5xx status)
+                    let errorMessage = 'Failed to load live posts. Please try again.';
+                    if (data && data.message) {
+                        errorMessage = data.message; // Use message from backend if available
+                    } else if (data && data.error) {
+                        errorMessage = data.error; // Use error from backend if available
+                    }
+                    throw new Error(errorMessage);
+                }
+
+                if (data.status === 'error') {
+                    // NewsAPI specific error handling (if Django passes it through)
+                    let errorMessage = 'Live news unavailable. Please try later.';
+                    if (data.message) {
+                        errorMessage = data.message;
+                    }
+                    throw new Error(errorMessage);
+                }
+
+                return data; // Assuming data contains an 'articles' array
+            } catch (error) {
+                console.error('Error fetching live posts:', error);
+                throw error; // Re-throw to be caught by handleRefreshLivePosts
+            }
+        }
+
+        // State variables
+
+        let currentPostId = null;
+        let activeTab = 'live'; // Default active tab is now live
+        let livePosts = [];
+        let loadingLivePosts = false;
+        let livePostsError = null;
+
+        // DOM Elements
+        const postList = document.getElementById('post-list');
+        const postDetail = document.getElementById('post-detail');
+        const livePostsGrid = document.getElementById('live-posts-grid');
+        const loadingState = document.getElementById('loading-state');
+        const noPostsState = document.getElementById('no-posts-state');
+
+        const tabLive = document.getElementById('tab-live');
+        const liveSection = document.getElementById('live-section');
+        const refreshLivePostsBtn = document.getElementById('refresh-live-posts');
+        const refreshIcon = document.getElementById('refresh-icon');
+
+        const backToPostsBtn = document.getElementById('back-to-posts');
+
+        // Post detail elements
+        const postTitle = document.getElementById('post-title');
+        const postExcerpt = document.getElementById('post-excerpt');
+        const postCategory = document.getElementById('post-category');
+        const postDate = document.getElementById('post-date');
+        const postReadTime = document.getElementById('post-read-time');
+        const postAuthor = document.getElementById('post-author');
+        const postImage = document.getElementById('post-image');
+        const postContent = document.getElementById('post-content');
+        const relatedPostsContainer = document.getElementById('related-posts-container');
+        const relatedPostsGrid = document.getElementById('related-posts');
+
+        // Share buttons
+        const shareFacebook = document.getElementById('share-facebook');
+        const shareTwitter = document.getElementById('share-twitter');
+        const shareLinkedin = document.getElementById('share-linkedin');
+        const shareCopy = document.getElementById('share-copy');
+
+        // Toast notification
+        const toast = document.getElementById('toast');
+        const toastMessageElem = document.getElementById('toast-message');
+
+        function showToast(message) {
+            toastMessageElem.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+
+
+        function sharePost(platform, post) {
+            const url = window.location.href;
+            const text = `Check out this article: ${post.title}`;
+
+            let shareUrl = '';
+            switch (platform) {
+                case 'facebook':
+                    shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(post.url || url)}`;
+                    break;
+                case 'twitter':
+                    shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(post.url || url)}`;
+                    break;
+                case 'linkedin':
+                    shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(post.url || url)}`;
+                    break;
+                case 'copy':
+                    navigator.clipboard.writeText(post.url || url).then(() => {
+                        showToast('Link copied to clipboard!');
+                    });
+                    return;
+            }
+
+            if (shareUrl) {
+                window.open(shareUrl, '_blank', 'width=600,height=400');
+            }
+        }
+
+        function renderPostCard(post, isRelated = false) {
+            const buttonClasses = isRelated ? 'py-2 text-sm' : 'py-3';
+            const titleClasses = isRelated ? 'text-lg' : 'text-xl';
+
+            return `
+                <div class="service-card group">
+                    <div class="service-card-top-accent"></div>
+                    <div class="relative p-6 transform group-hover:-translate-y-2 transition-all duration-500">
+                        <div class="relative h-48 mb-6 overflow-hidden rounded-lg">
+                            <img src="${post.imageUrl || 'https://placehold.co/600x400/1a1a1a/ffffff?text=Post+Image'}" alt="${post.title}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                            <div class="absolute bottom-3 left-3 bg-white/10 backdrop-blur-md rounded-full px-3 py-1 text-sm text-white border border-white/20 flex items-center">
+                                <i class="fas fa-tag mr-2"></i>${post.category || 'General'}
+                            </div>
+
+                        </div>
+                        <div class="flex items-center justify-between mb-3 text-sm text-gray-400">
+                            <div class="flex items-center">
+                                <i class="fas fa-calendar text-xs mr-1"></i>
+                                <span>${post.date}</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-clock text-xs mr-1"></i>
+                                <span>${post.readTime || 'N/A'}</span>
+                            </div>
+                        </div>
+                        <h3 class="${titleClasses} font-bold text-white group-hover:text-blue-100 transition-colors duration-300 mb-3">
+                            ${post.title}
+                        </h3>
+                        <p class="text-gray-300 leading-relaxed text-base mb-6">${post.excerpt}</p>
+                        <button class="read-more-btn w-full btn-gradient text-black rounded-lg ${buttonClasses} font-semibold transition-all duration-300 transform group-hover:scale-105 shadow-lg hover:shadow-xl block text-center" data-id="${post.id}" onclick="showStaticPostContent('${post.id}')">
+                            Read More
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Frontend English language filtering function
+        function isEnglishText(text) {
+            if (!text || typeof text !== 'string') {
+                return false;
+            }
+            // Remove HTML tags
+            text = text.replace(/<[^>]*>/g, '');
+            // Check for Arabic characters
+            const arabicPattern = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
+            if (arabicPattern.test(text)) {
+                return false;
+            }
+            // Check for at least a few English letters (relaxed)
+            const englishLetterPattern = /[a-zA-Z]{3,}/;
+            return englishLetterPattern.test(text);
+        }
+
+        function filterEnglishArticles(articles) {
+            console.log('Articles received from backend:', articles);
+            const filtered = articles.filter(article => {
+                const title = article.title || '';
+                const description = article.description || '';
+                return isEnglishText(title) && isEnglishText(description);
+            });
+            console.log('Articles after frontend filter:', filtered);
+            return filtered;
+        }
+
+        function renderLivePosts(articles) {
+            livePostsGrid.innerHTML = '';
+            if (!articles || articles.length === 0) {
+                noPostsState.classList.remove('hidden');
+                noPostsState.querySelector('h3').textContent = 'No live posts found';
+                noPostsState.querySelector('p').textContent = 'Try again later';
+                livePostsGrid.classList.add('hidden');
+                return;
+            }
+            noPostsState.classList.add('hidden');
+            livePostsGrid.classList.remove('hidden');
+
+            articles.forEach(article => {
+                const dateObj = article.publishedAt ? new Date(article.publishedAt) : new Date();
+                const dateStr = dateObj.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+
+                // Create a unique ID for live articles if they don't have one
+                const articleId = article.url ? btoa(article.url).replace(/=/g, '') : `live-${Math.random().toString(36).substr(2, 9)}`;
+
+                const cardHtml = `
+                    <div class="service-card group flex flex-col cursor-pointer" data-article-id="${articleId}">
+                        <div class="service-card-top-accent"></div>
+                        <div class="relative p-6 flex-1 flex flex-col">
+                            <div class="relative h-48 mb-6 overflow-hidden rounded-lg">
+                                <img src="${article.urlToImage || 'https://placehold.co/600x400/1a1a1a/ffffff?text=Live+Post+Image'}" alt="${article.title || 'Post Image'}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                                <div class="absolute bottom-3 left-3 bg-white/10 backdrop-blur-md rounded-full px-3 py-1 text-sm text-white border border-white/20 flex items-center">
+                                    <i class="fas fa-tag mr-2"></i>${article.source ? article.source.name : 'News'}
+                                </div>
+
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-2">${article.title || 'No Title'}</h3>
+                            <p class="text-gray-300 mb-4 flex-1">${article.description || 'No description available.'}</p>
+                            <div class="flex items-center justify-between mt-auto">
+                                <span class="text-sm text-gray-400">${dateStr}</span>
+                                <button class="read-more-btn text-blue-400 hover:underline" onclick="window.open('${article.url}', '_blank')">Read more</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = cardHtml;
+                const cardElement = tempDiv.firstElementChild;
+                livePostsGrid.appendChild(cardElement);
+
+                // Add click event listener to the card
+                cardElement.addEventListener('click', (e) => {
+                    // Redirect directly to the article URL
+                    if (article.url) {
+                        window.open(article.url, '_blank');
+                    }
+                });
+            });
+        }
+
+        async function handleRefreshLivePosts() {
+            loadingLivePosts = true;
+            livePostsError = null;
+            livePosts = []; // Clear previous posts
+            loadingState.classList.remove('hidden');
+            livePostsGrid.classList.add('hidden');
+            noPostsState.classList.add('hidden');
+            refreshLivePostsBtn.disabled = true;
+            refreshIcon.classList.add('animate-spin');
+
+            try {
+                const data = await fetchLivePostsFromBackend();
+                if (data.articles && data.articles.length > 0) {
+                    // Use articles directly from backend (backend already filters for English)
+                    console.log(`Backend returned ${data.articles.length} articles`);
+                    livePosts = data.articles;
+                    renderLivePosts(livePosts);
+                } else {
+                    // Show backend error message if available
+                    let errorMsg = 'No live posts found. Try again later.';
+                    if (data.newsapi_message) {
+                        errorMsg += '\n' + data.newsapi_message;
+                    }
+                    if (data.newsapi_raw && data.newsapi_raw.message) {
+                        errorMsg += '\nNewsAPI: ' + data.newsapi_raw.message;
+                    }
+                    noPostsState.querySelector('h3').textContent = errorMsg;
+                    noPostsState.querySelector('p').textContent = '';
+                    noPostsState.classList.remove('hidden');
+                }
+            } catch (err) {
+                console.error('Live posts API fetch error:', err);
+                livePostsError = err.message || 'Failed to load live posts. Please try again.';
+                noPostsState.querySelector('h3').textContent = 'Live news unavailable.';
+                noPostsState.querySelector('p').textContent = 'Please try later.';
+                noPostsState.classList.remove('hidden');
+            } finally {
+                loadingLivePosts = false;
+                loadingState.classList.add('hidden');
+                refreshLivePostsBtn.disabled = false;
+                refreshIcon.classList.remove('animate-spin');
+            }
+        }
+
+        function showPostDetail(postId) {
+            currentPostId = postId;
+            const post = livePosts.find(p => p.url ? btoa(p.url).replace(/=/g, '') : `live-${Math.random().toString(36).substr(2, 9)}` === postId);
+
+            if (!post) return;
+
+            // Update post detail elements for live posts
+            postTitle.textContent = post.title || 'No Title';
+            postExcerpt.textContent = post.description || 'No description available';
+            postCategory.innerHTML = `<i class="fas fa-tag mr-2"></i>${post.source ? post.source.name : 'News'}`;
+            postDate.innerHTML = `<i class="fas fa-calendar mr-2"></i>${post.publishedAt ? new Date(post.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'Unknown Date'}`;
+            postReadTime.innerHTML = `<i class="fas fa-clock mr-2"></i>5 min read`;
+            postAuthor.innerHTML = `<i class="fas fa-user mr-2"></i>${post.author || 'Unknown Author'}`;
+            postImage.src = post.urlToImage || 'https://placehold.co/1000x500/1a1a1a/ffffff?text=Post+Image';
+            postImage.alt = post.title || 'Post Image';
+            postContent.innerHTML = `<p>${post.description || 'No content available.'}</p><p><a href="${post.url}" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:underline">Read full article →</a></p>`;
+
+            // Hide related posts for live posts (since we don't have a proper related posts system)
+            relatedPostsContainer.classList.add('hidden');
+
+            // Show post detail view
+            postList.classList.add('hidden');
+            postDetail.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showPostsList() {
+            postDetail.classList.remove('active');
+            postList.classList.remove('hidden');
+        }
+
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIcon = document.getElementById('menu-icon');
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            if (mobileMenu.classList.contains('hidden')) {
+                menuIcon.classList.remove('fa-times');
+                menuIcon.classList.add('fa-bars');
+            } else {
+                menuIcon.classList.remove('fa-bars');
+                menuIcon.classList.add('fa-times');
+            }
+        });
+
+        // Header Scroll Effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.remove('bg-black/90', 'border-gray-900');
+                navbar.classList.add('bg-black/95', 'border-gray-800', 'shadow-2xl');
+            } else {
+                navbar.classList.remove('bg-black/95', 'border-gray-800', 'shadow-2xl');
+                navbar.classList.add('bg-black/90', 'border-gray-900');
+            }
+        });
+
+        // Footer Content Animation on Scroll
+        const footerContentGrid = document.getElementById('footer-content-grid');
+        const footerSections = footerContentGrid ? Array.from(footerContentGrid.children) : [];
+
+        const footerObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    footerSections.forEach((section, index) => {
+                        setTimeout(() => {
+                            section.style.opacity = '1';
+                            section.style.transform = 'translateY(0)';
+                            section.style.transition = 'all 0.8s ease-out';
+                        }, index * 200);
+                    });
+                    footerObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+        // Start observing the footer content grid
+        if (footerContentGrid) {
+            footerObserver.observe(footerContentGrid);
+        }
+
+        // Tab toggle logic
+        tabLive.addEventListener('click', () => {
+            activeTab = 'live';
+            tabLive.classList.add('bg-white', 'text-black', 'shadow-md');
+            tabLive.classList.remove('bg-gray-800', 'text-white');
+            liveSection.classList.remove('hidden');
+            handleRefreshLivePosts(); // Fetch and render live posts on tab click
+        });
+
+        // Event listeners for share buttons
+        shareFacebook.addEventListener('click', () => {
+            const post = livePosts.find(p => p.url ? btoa(p.url).replace(/=/g, '') : `live-${Math.random().toString(36).substr(2, 9)}` === currentPostId);
+            if (post) sharePost('facebook', post);
+        });
+        shareTwitter.addEventListener('click', () => {
+            const post = livePosts.find(p => p.url ? btoa(p.url).replace(/=/g, '') : `live-${Math.random().toString(36).substr(2, 9)}` === currentPostId);
+            if (post) sharePost('twitter', post);
+        });
+        shareLinkedin.addEventListener('click', () => {
+            const post = livePosts.find(p => p.url ? btoa(p.url).replace(/=/g, '') : `live-${Math.random().toString(36).substr(2, 9)}` === currentPostId);
+            if (post) sharePost('linkedin', post);
+        });
+        shareCopy.addEventListener('click', () => {
+            const post = livePosts.find(p => p.url ? btoa(p.url).replace(/=/g, '') : `live-${Math.random().toString(36).substr(2, 9)}` === currentPostId);
+            if (post) sharePost('copy', post);
+        });
+
+        // Back to posts button
+        backToPostsBtn.addEventListener('click', showPostsList);
+
+        // Refresh button for live posts
+        refreshLivePostsBtn.addEventListener('click', handleRefreshLivePosts);
+
+        // Initialize the page on DOMContentLoaded
+        window.addEventListener('DOMContentLoaded', () => {
+            // Show live section by default
+            liveSection.classList.remove('hidden');
+            // Fetch live posts immediately
+            handleRefreshLivePosts();
+        });
+
+        function showStaticPostContent(postId) {
+            // Find the post by ID
+            const post = posts.find(p => p.id === postId);
+            if (!post) return;
+            // Find the card element
+            const card = document.querySelector(`[data-id='${postId}']`).closest('.service-card');
+            // Remove any existing expanded content
+            const existing = card.querySelector('.expanded-content');
+            if (existing) existing.remove();
+            // Create and insert the expanded content
+            const expanded = document.createElement('div');
+            expanded.className = 'expanded-content bg-gray-900 text-white p-6 rounded-lg mt-4';
+            expanded.innerHTML = post.content;
+            card.appendChild(expanded);
+            // Scroll to the expanded content
+            expanded.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    </script>
+</body>
+</html>

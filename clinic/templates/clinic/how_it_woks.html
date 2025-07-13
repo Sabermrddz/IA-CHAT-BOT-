@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How It Works - Inspair.Health AI Medical Assistant</title>
+    <meta name="description" content="Learn how Inspair.Health AI medical assistant works using advanced OpenRouter API and Tencent Hunyuan A13B model for accurate health guidance.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Custom Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+        @keyframes gradientShift {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        @keyframes particleFloat {
+            0%, 100% {
+                transform: translateY(0px) translateX(0px);
+                opacity: 0.6;
+            }
+            33% {
+                transform: translateY(-20px) translateX(10px);
+                opacity: 0.8;
+            }
+            66% {
+                transform: translateY(-10px) translateX(-10px);
+                opacity: 0.7;
+            }
+        }
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        @keyframes glow {
+            0%, 100% {
+                box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+            }
+            50% {
+                box-shadow: 0 0 25px rgba(147, 51, 234, 0.3);
+            }
+        }
+
+        /* Automatic Step Process Animations */
+        @keyframes stepReveal {
+            0% {
+                opacity: 0;
+                transform: translateY(50px) scale(0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes stepGlow {
+            0%, 100% {
+                box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+            }
+            50% {
+                box-shadow: 0 8px 30px rgba(59, 130, 246, 0.6), 0 0 20px rgba(147, 51, 234, 0.4);
+            }
+        }
+
+        @keyframes numberPulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+            }
+            50% {
+                transform: scale(1.1);
+                box-shadow: 0 6px 25px rgba(59, 130, 246, 0.6);
+            }
+        }
+
+        @keyframes iconBounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes techCardFloat {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            33% {
+                transform: translateY(-8px);
+            }
+            66% {
+                transform: translateY(-4px);
+            }
+        }
+
+        @keyframes techIconSpin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes techGlow {
+            0%, 100% {
+                box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+            }
+            33% {
+                box-shadow: 0 8px 25px rgba(147, 51, 234, 0.4);
+            }
+            66% {
+                box-shadow: 0 6px 20px rgba(6, 182, 212, 0.3);
+            }
+        }
+
+        @keyframes progressBar {
+            0% {
+                width: 0%;
+            }
+            100% {
+                width: 100%;
+            }
+        }
+
+        /* Auto animation classes */
+        .auto-step-reveal {
+            animation: stepReveal 1s ease-out forwards;
+        }
+
+        .auto-step-glow {
+            animation: stepGlow 3s ease-in-out infinite;
+        }
+
+        .auto-number-pulse {
+            animation: numberPulse 2s ease-in-out infinite;
+        }
+
+        .auto-icon-bounce {
+            animation: iconBounce 2.5s ease-in-out infinite;
+        }
+
+        .auto-tech-float {
+            animation: techCardFloat 4s ease-in-out infinite;
+        }
+
+        .auto-tech-icon-spin {
+            animation: techIconSpin 8s linear infinite;
+        }
+
+        .auto-tech-glow {
+            animation: techGlow 4s ease-in-out infinite;
+        }
+
+        .progress-line {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(to right, #3b82f6, #8b5cf6, #06b6d4);
+            animation: progressBar 2s ease-out forwards;
+        }
+
+        .animate-fadeInUp {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        .animate-slideDown {
+            animation: slideDown 0.3s ease-out forwards;
+        }
+        .animate-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+        .animate-gradient {
+            animation: gradientShift 6s ease-in-out infinite;
+        }
+        .animate-particle {
+            animation: particleFloat 12s ease-in-out infinite;
+        }
+        .animate-rotate {
+            animation: rotate 25s linear infinite;
+        }
+        .animate-glow {
+            animation: glow 4s ease-in-out infinite;
+        }
+
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+        .delay-500 { animation-delay: 0.5s; }
+        .delay-600 { animation-delay: 0.6s; }
+        .delay-1000 { animation-delay: 1s; }
+        .delay-2000 { animation-delay: 2s; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1f2937;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #ffffff, #9ca3af);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #f3f4f6, #6b7280);
+        }
+
+        /* Smooth transitions */
+        * {
+            transition: all 0.3s ease;
+        }
+
+        /* Navigation underline effect */
+        .nav-link {
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(to right, #ffffff, #d1d5db);
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        /* Text gradient */
+        .text-gradient {
+            background: linear-gradient(to right, #ffffff, #93c5fd, #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Step card styles */
+        .step-card {
+            position: relative;
+            background: linear-gradient(135deg, rgba(31, 41, 55, 0.8), rgba(17, 24, 39, 0.8));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(75, 85, 99, 0.5);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.5s ease;
+        }
+
+        .step-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), transparent, rgba(147, 51, 234, 0.1));
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            border-radius: 12px;
+        }
+
+        .step-card:hover::before {
+            opacity: 1;
+        }
+
+        .step-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border-color: rgba(156, 163, 175, 0.5);
+        }
+
+        .step-number {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.25rem;
+            margin: 0 auto 1rem;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Floating shapes */
+        .floating-shape {
+            border-radius: 50%;
+            filter: blur(40px);
+        }
+
+        /* Tech stack card */
+        .tech-card {
+            background: linear-gradient(135deg, rgba(31, 41, 55, 0.9), rgba(17, 24, 39, 0.9));
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(75, 85, 99, 0.6);
+            border-radius: 16px;
+            transition: all 0.4s ease;
+        }
+
+        .tech-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.4);
+            border-color: rgba(156, 163, 175, 0.6);
+        }
+
+        /* Button styles */
+        .btn-gradient {
+            background: linear-gradient(to right, #ffffff, #f3f4f6);
+            color: #000;
+        }
+        .btn-gradient:hover {
+            background: linear-gradient(to right, #f3f4f6, #ffffff);
+        }
+
+        /* Feature card styles */
+        .feature-card {
+            background: linear-gradient(135deg, rgba(31, 41, 55, 0.6), rgba(17, 24, 39, 0.6));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(75, 85, 99, 0.3);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            border-color: rgba(156, 163, 175, 0.5);
+            transform: translateY(-2px);
+        }
+
+        /* Hero image container */
+        .hero-image {
+            position: absolute;
+            inset: 0;
+            transition: opacity 0.7s ease-in-out;
+        }
+        .hero-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to right, rgba(0,0,0,0.6), rgba(0,0,0,0.4), rgba(0,0,0,0.5));
+        }
+
+        .progress-line.bg-gradient-to-r {
+            background: linear-gradient(to right, #ef4444, #dc2626) !important;
+        }
+    </style>
+</head>
+<body class="bg-black text-white">
+    <!-- Hero Section -->
+    <section class="relative pt-16 pb-20 lg:pt-20 lg:pb-32 overflow-hidden bg-gradient-to-b from-black via-gray-900 to-gray-800">
+    <!-- Animated Back Button -->
+    <div class="absolute top-6 left-6 z-20">
+        <a href="/chat_box" class="group flex items-center space-x-2 bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white hover:text-black px-6 py-3 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg">
+            <i class="fas fa-arrow-left text-lg group-hover:animate-pulse"></i>
+            <span class="font-semibold">Back</span>
+        </a>
+    </div>
+
+    <!-- Background Images -->
+    <div id="hero-images" class="absolute inset-0 z-0">
+        <div class="hero-image opacity-100">
+            <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/igor-omilaev-eGGFZ5X2LnA-unsplash.jpg-aWF33YgW67xbpeSJdInPdX2YI0zpm0.jpeg" alt="AI Technology Circuit Board" crossorigin="anonymous">
+            <div class="hero-overlay"></div>
+        </div>
+        <div class="hero-image opacity-0">
+            <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/drmakete-lab-hsg538WrP0Y-unsplash.jpg-KmJM8QfZgAEB8TR8JaUY5MA56YeFil.jpeg" alt="Advanced Technology Innovation" crossorigin="anonymous">
+            <div class="hero-overlay"></div>
+        </div>
+        <div class="hero-image opacity-0">
+            <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/pexels-pixabay-40568.jpg-RuXMfubBc3ejVzjosGJ3G4svzYpinm.jpeg" alt="Medical Healthcare Stethoscope" crossorigin="anonymous">
+            <div class="hero-overlay"></div>
+        </div>
+    </div>
+    
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <!-- Text Content -->
+            <div class="text-center lg:text-left">
+                <h1 class="text-4xl md:text-6xl font-bold text-white mb-6 animate-fadeInUp drop-shadow-lg">
+                    How Our AI Medical Assistant Works
+                </h1>
+                <p class="text-xl md:text-2xl text-gray-200 mb-4 animate-fadeInUp delay-200 drop-shadow-md">
+                    Advanced AI Technology Meets Medical Excellence
+                </p>
+                <p class="text-lg text-gray-300 mb-8 animate-fadeInUp delay-300 drop-shadow-md">
+                    Discover the cutting-edge technology behind Inspair.Health's AI-powered virtual medical assistant that provides instant, reliable health guidance.
+                </p>
+            </div>
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-white/15 backdrop-blur-md border border-white/30 text-white hover:bg-white/25 transition-all duration-300 shadow-lg rounded-lg p-6 text-center animate-fadeInUp delay-500">
+                    <i class="fas fa-microchip text-3xl mx-auto mb-3 text-blue-400"></i>
+                    <div class="text-2xl font-bold mb-1">A13B</div>
+                    <div class="text-sm text-gray-300">Hunyuan Model</div>
+                </div>
+                <div class="bg-white/15 backdrop-blur-md border border-white/30 text-white hover:bg-white/25 transition-all duration-300 shadow-lg rounded-lg p-6 text-center animate-fadeInUp delay-600">
+                    <i class="fas fa-language text-3xl mx-auto mb-3 text-green-400"></i>
+                    <div class="text-2xl font-bold mb-1">Multi</div>
+                    <div class="text-sm text-gray-300">Language Support</div>
+                </div>
+                <div class="bg-white/15 backdrop-blur-md border border-white/30 text-white hover:bg-white/25 transition-all duration-300 shadow-lg rounded-lg p-6 text-center animate-fadeInUp delay-700">
+                    <i class="fas fa-clock text-3xl mx-auto mb-3 text-purple-400"></i>
+                    <div class="text-2xl font-bold mb-1">24/7</div>
+                    <div class="text-sm text-gray-300">AI Availability</div>
+                </div>
+                <div class="bg-white/15 backdrop-blur-md border border-white/30 text-white hover:bg-white/25 transition-all duration-300 shadow-lg rounded-lg p-6 text-center animate-fadeInUp delay-700">
+                    <i class="fas fa-shield-alt text-3xl mx-auto mb-3 text-cyan-400"></i>
+                    <div class="text-2xl font-bold mb-1">100%</div>
+                    <div class="text-sm text-gray-300">Secure & Private</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Image indicators -->
+    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3 z-10">
+        <button class="indicator w-3 h-3 rounded-full bg-white shadow-lg scale-125 transition-all duration-300" data-index="0"></button>
+        <button class="indicator w-3 h-3 rounded-full bg-white/60 hover:bg-white/80 transition-all duration-300" data-index="1"></button>
+        <button class="indicator w-3 h-3 rounded-full bg-white/60 hover:bg-white/80 transition-all duration-300" data-index="2"></button>
+    </div>
+</section>
+
+    <!-- How It Works Steps -->
+    <section class="py-20 bg-gradient-to-b from-gray-800 to-black relative overflow-hidden">
+        <!-- Background particles -->
+        <div class="absolute inset-0 opacity-10">
+            <div class="animate-particle absolute w-2 h-2 bg-blue-400 rounded-full" style="top: 20%; left: 10%;"></div>
+            <div class="animate-particle absolute w-3 h-3 bg-purple-400 rounded-full delay-1000" style="top: 40%; right: 20%;"></div>
+            <div class="animate-particle absolute w-2 h-2 bg-cyan-400 rounded-full delay-2000" style="bottom: 30%; left: 30%;"></div>
+            <div class="animate-particle absolute w-2 h-2 bg-green-400 rounded-full delay-3000" style="top: 60%; right: 40%;"></div>
+            <div class="animate-particle absolute w-3 h-3 bg-yellow-400 rounded-full delay-4000" style="bottom: 50%; right: 10%;"></div>
+        </div>
+
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Simple 4-Step Process</h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    Our AI medical assistant provides instant, reliable health guidance through an intuitive process
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8" id="steps-container">
+                <!-- Step 1 -->
+                <div class="step-card p-8 text-center auto-step-reveal auto-step-glow" style="animation-delay: 0.5s;">
+                    <div class="step-number auto-number-pulse" style="animation-delay: 1s;">1</div>
+                    <div class="mb-4">
+                        <i class="fas fa-comment-medical text-4xl text-blue-400 mb-4 auto-icon-bounce" style="animation-delay: 1.5s;"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-4">Describe Your Symptoms</h3>
+                    <p class="text-gray-300 leading-relaxed">
+                        Simply type your health concerns or symptoms in your preferred language. Our AI understands multiple languages and medical terminology.
+                    </p>
+                    <div class="progress-line" style="animation-delay: 2s;"></div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="step-card p-8 text-center auto-step-reveal auto-step-glow" style="animation-delay: 1s;">
+                    <div class="step-number auto-number-pulse" style="animation-delay: 1.5s;">2</div>
+                    <div class="mb-4">
+                        <i class="fas fa-brain text-4xl text-purple-400 mb-4 auto-icon-bounce" style="animation-delay: 2s;"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-4">AI Analysis</h3>
+                    <p class="text-gray-300 leading-relaxed">
+                        Our advanced Tencent Hunyuan A13B model processes your input using vast medical knowledge to understand your condition.
+                    </p>
+                    <div class="progress-line" style="animation-delay: 2.5s;"></div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="step-card p-8 text-center auto-step-reveal auto-step-glow" style="animation-delay: 1.5s;">
+                    <div class="step-number auto-number-pulse" style="animation-delay: 2s;">3</div>
+                    <div class="mb-4">
+                        <i class="fas fa-search-plus text-4xl text-green-400 mb-4 auto-icon-bounce" style="animation-delay: 2.5s;"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-4">Medical Assessment</h3>
+                    <p class="text-gray-300 leading-relaxed">
+                        The AI analyzes symptoms against medical databases to provide potential diagnoses and health insights based on current medical knowledge.
+                    </p>
+                    <div class="progress-line" style="animation-delay: 3s;"></div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="step-card p-8 text-center auto-step-reveal auto-step-glow" style="animation-delay: 2s;">
+                    <div class="step-number auto-number-pulse" style="animation-delay: 2.5s;">4</div>
+                    <div class="mb-4">
+                        <i class="fas fa-clipboard-list text-4xl text-cyan-400 mb-4 auto-icon-bounce" style="animation-delay: 3s;"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-4">Personalized Guidance</h3>
+                    <p class="text-gray-300 leading-relaxed">
+                        Receive tailored health recommendations, next steps, and guidance on when to seek professional medical care.
+                    </p>
+                    <div class="progress-line" style="animation-delay: 3.5s;"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technology Stack -->
+    <section class="py-20 bg-gradient-to-b from-black to-gray-900 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-gradient mb-6">Powered by Advanced Technology</h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    Our AI medical assistant leverages cutting-edge technology to provide accurate and reliable health guidance
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="tech-container">
+                <!-- OpenRouter API -->
+                <div class="tech-card p-8 text-center auto-tech-float auto-tech-glow" style="animation-delay: 0.5s;">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6 auto-tech-glow">
+                        <i class="fas fa-network-wired text-2xl text-white auto-tech-icon-spin" style="animation-delay: 1s;"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-4">OpenRouter API</h3>
+                    <p class="text-gray-300 leading-relaxed">
+                        Secure and reliable API integration that ensures fast response times and consistent availability for medical consultations.
+                    </p>
+                    <div class="progress-line" style="animation-delay: 1.5s;"></div>
+                </div>
+
+                <!-- Tencent Hunyuan Model -->
+                <div class="tech-card p-8 text-center auto-tech-float auto-tech-glow" style="animation-delay: 1s;">
+                    <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6 auto-tech-glow">
+                        <i class="fas fa-microchip text-2xl text-white auto-tech-icon-spin" style="animation-delay: 1.5s;"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-4">Tencent Hunyuan A13B</h3>
+                    <p class="text-gray-300 leading-relaxed">
+                        Advanced large language model specifically trained on medical data to provide accurate health assessments and recommendations.
+                    </p>
+                    <div class="progress-line" style="animation-delay: 2s;"></div>
+                </div>
+
+                <!-- Django Backend -->
+                <div class="tech-card p-8 text-center auto-tech-float auto-tech-glow" style="animation-delay: 1.5s;">
+                    <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-6 auto-tech-glow">
+                        <i class="fas fa-server text-2xl text-white auto-tech-icon-spin" style="animation-delay: 2s;"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-4">Django Backend</h3>
+                    <p class="text-gray-300 leading-relaxed">
+                        Robust Python framework ensuring secure data handling, user authentication, and seamless integration with medical APIs.
+                    </p>
+                    <div class="progress-line" style="animation-delay: 2.5s;"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Features -->
+<section class="py-16 bg-gradient-to-b from-gray-900 to-black relative overflow-hidden">
+    <!-- Background particles -->
+    <div class="absolute inset-0 opacity-15">
+        <div class="animate-particle absolute w-2 h-2 bg-blue-400 rounded-full" style="top: 25%; left: 10%;"></div>
+        <div class="animate-particle absolute w-3 h-3 bg-purple-400 rounded-full delay-1000" style="top: 70%; right: 15%;"></div>
+        <div class="animate-particle absolute w-2 h-2 bg-green-400 rounded-full delay-2000" style="bottom: 40%; left: 20%;"></div>
+        <div class="animate-particle absolute w-3 h-3 bg-cyan-400 rounded-full delay-3000" style="top: 50%; right: 25%;"></div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Why Choose Our AI Assistant?</h2>
+            <p class="text-lg text-gray-300 max-w-2xl mx-auto">
+                Designed specifically for medical consultations with safety and accuracy as top priorities
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="feature-card p-6 rounded-lg text-center auto-step-reveal auto-step-glow" style="animation-delay: 0.5s;">
+                <div class="w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-language text-blue-400 text-2xl auto-icon-bounce"></i>
+                </div>
+                <h3 class="text-lg font-bold text-white mb-2">Multilingual Support</h3>
+                <p class="text-gray-300 text-sm">Responds in your preferred language worldwide</p>
+                <div class="progress-line" style="animation-delay: 1s;"></div>
+            </div>
+
+            <div class="feature-card p-6 rounded-lg text-center auto-step-reveal auto-step-glow" style="animation-delay: 1s;">
+                <div class="w-16 h-16 bg-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-shield-alt text-purple-400 text-2xl auto-icon-bounce" style="animation-delay: 0.5s;"></i>
+                </div>
+                <h3 class="text-lg font-bold text-white mb-2">Medical Focus Only</h3>
+                <p class="text-gray-300 text-sm">Strictly limited to health-related topics</p>
+                <div class="progress-line" style="animation-delay: 1.5s;"></div>
+            </div>
+
+            <div class="feature-card p-6 rounded-lg text-center auto-step-reveal auto-step-glow" style="animation-delay: 1.5s;">
+                <div class="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-clock text-green-400 text-2xl auto-icon-bounce" style="animation-delay: 1s;"></i>
+                </div>
+                <h3 class="text-lg font-bold text-white mb-2">24/7 Availability</h3>
+                <p class="text-gray-300 text-sm">Available when doctors aren't accessible</p>
+                <div class="progress-line" style="animation-delay: 2s;"></div>
+            </div>
+
+            <div class="feature-card p-6 rounded-lg text-center auto-step-reveal auto-step-glow" style="animation-delay: 2s;">
+                <div class="w-16 h-16 bg-cyan-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-lock text-cyan-400 text-2xl auto-icon-bounce" style="animation-delay: 1.5s;"></i>
+                </div>
+                <h3 class="text-lg font-bold text-white mb-2">Secure & Private</h3>
+                <p class="text-gray-300 text-sm">Encrypted communications and data protection</p>
+                <div class="progress-line" style="animation-delay: 2.5s;"></div>
+            </div>
+        </div>
+
+        <!-- Medical Grade AI Notice -->
+        <div class="mt-12 text-center">
+            <div class="bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-lg rounded-xl p-6 border border-gray-700/50 max-w-2xl mx-auto auto-tech-glow" style="animation-delay: 3s;">
+                <i class="fas fa-stethoscope text-4xl text-blue-400 mb-4 animate-float"></i>
+                <h3 class="text-xl font-bold text-white mb-2">Medical-Grade AI</h3>
+                <p class="text-gray-300 mb-4">
+                    Specifically designed for healthcare applications with reliable preliminary assessments.
+                </p>
+                <div class="bg-black/30 rounded-lg p-3">
+                    <p class="text-xs text-gray-400">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Always consult qualified healthcare professionals for proper medical diagnosis and treatment.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Beta Version Notice -->
+<section class="py-16 bg-gradient-to-b from-black to-gray-900 relative overflow-hidden">
+    <!-- Animated background elements -->
+    <div class="absolute inset-0 opacity-20">
+        <div class="animate-particle absolute w-3 h-3 bg-red-400 rounded-full" style="top: 20%; left: 15%;"></div>
+        <div class="animate-particle absolute w-2 h-2 bg-red-500 rounded-full delay-1000" style="top: 60%; right: 20%;"></div>
+        <div class="animate-particle absolute w-4 h-4 bg-red-300 rounded-full delay-2000" style="bottom: 30%; left: 25%;"></div>
+    </div>
+    
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div class="bg-gradient-to-br from-red-900/30 to-red-800/30 backdrop-blur-lg border border-red-500/30 rounded-2xl p-8 md:p-12 auto-tech-glow" style="animation-delay: 0.5s;">
+            <div class="mb-6">
+                <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-red-500 to-red-600 rounded-full mb-6 auto-tech-glow">
+                    <i class="fas fa-flask text-3xl text-white auto-tech-icon-spin"></i>
+                </div>
+                <h2 class="text-3xl md:text-4xl font-bold text-gradient mb-4">Beta Version Experience</h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto mb-6">
+                    You're experiencing the cutting-edge beta version of our AI medical assistant website
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-red-500/10 backdrop-blur-sm rounded-lg p-4 border border-red-400/20 auto-tech-float" style="animation-delay: 1s;">
+                    <i class="fas fa-rocket text-2xl text-red-400 mb-2 auto-icon-bounce"></i>
+                    <h3 class="text-lg font-bold text-white mb-2">Latest Features</h3>
+                    <p class="text-gray-300 text-sm">Access to newest AI capabilities and medical insights</p>
+                </div>
+                
+                <div class="bg-red-500/10 backdrop-blur-sm rounded-lg p-4 border border-red-400/20 auto-tech-float" style="animation-delay: 1.5s;">
+                    <i class="fas fa-cogs text-2xl text-red-400 mb-2 auto-icon-bounce" style="animation-delay: 0.5s;"></i>
+                    <h3 class="text-lg font-bold text-white mb-2">Continuous Updates</h3>
+                    <p class="text-gray-300 text-sm">Regular improvements and new medical knowledge integration</p>
+                </div>
+                
+                <div class="bg-red-500/10 backdrop-blur-sm rounded-lg p-4 border border-red-400/20 auto-tech-float" style="animation-delay: 2s;">
+                    <i class="fas fa-users text-2xl text-red-400 mb-2 auto-icon-bounce" style="animation-delay: 1s;"></i>
+                    <h3 class="text-lg font-bold text-white mb-2">Early Access</h3>
+                    <p class="text-gray-300 text-sm">Be among the first to experience next-gen healthcare AI</p>
+                </div>
+            </div>
+            
+            <div class="bg-gradient-to-r from-red-600/20 to-red-500/20 rounded-lg p-4 border border-red-400/30">
+                <p class="text-red-200 text-sm">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    This beta version includes the most advanced AI medical features and is continuously evolving based on user feedback and medical research.
+                </p>
+            </div>
+            <div class="progress-line bg-gradient-to-r from-red-500 to-red-600" style="animation-delay: 2.5s;"></div>
+        </div>
+    </div>
+</section>
+
+    <!-- CTA Section -->
+    <section class="py-20 bg-gradient-to-r from-blue-900 via-purple-900 to-cyan-900 relative overflow-hidden">
+        <div class="absolute inset-0 bg-black/50"></div>
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">
+                Ready to Experience AI-Powered Healthcare?
+            </h2>
+            <p class="text-xl text-gray-200 mb-8 max-w-3xl mx-auto">
+                Start your conversation with our AI medical assistant today and get instant health guidance when you need it most.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="/chat_box" class="bg-white text-black hover:bg-gray-200 px-8 py-4 text-lg rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 font-semibold flex items-center justify-center">
+                    <i class="fas fa-comments mr-2"></i>
+                    Start AI Chat Now
+                </a>
+                <a href="/" class="border-2 border-white text-white hover:bg-white hover:text-black px-8 py-4 text-lg rounded-full transition-all duration-300 bg-transparent backdrop-blur-sm flex items-center justify-center">
+                    <i class="fas fa-home mr-2"></i>
+                    Back to Home
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="relative overflow-hidden bg-gradient-to-b from-gray-800 via-gray-900 to-black py-12">
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="mb-8">
+                <h3 class="text-2xl font-bold text-gradient mb-4">Inspair.Health</h3>
+                <p class="text-gray-300 max-w-2xl mx-auto">
+                    Empowering your health journey with AI-powered insights and professional medical support.
+                </p>
+            </div>
+            
+            <div class="border-t border-gray-700/50 pt-8">
+                <p class="text-gray-400">
+                    © 2024 Inspair.Health. All rights reserved. | HIPAA Compliant Healthcare Platform
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Step cards hover effects
+        const stepCards = document.querySelectorAll('.step-card');
+        stepCards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-8px) scale(1.02)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // Tech cards hover effects
+        const techCards = document.querySelectorAll('.tech-card');
+        techCards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-4px) scale(1.01)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // Feature cards hover effects
+        const featureCards = document.querySelectorAll('.feature-card');
+        featureCards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-2px)';
+                card.style.borderColor = 'rgba(156, 163, 175, 0.5)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+                card.style.borderColor = 'rgba(75, 85, 99, 0.3)';
+            });
+        });
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all animated elements
+        document.querySelectorAll('.animate-fadeInUp').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            observer.observe(el);
+        });
+
+        // Add loading animation
+        window.addEventListener('load', () => {
+            document.body.style.opacity = '1';
+        });
+
+        // Add scroll-to-top functionality
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 500) {
+                if (!document.getElementById('scroll-top')) {
+                    const scrollTop = document.createElement('button');
+                    scrollTop.id = 'scroll-top';
+                    scrollTop.innerHTML = '<i class="fas fa-arrow-up"></i>';
+                    scrollTop.className = 'fixed bottom-8 right-8 w-12 h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg transition-all duration-300 z-50 flex items-center justify-center';
+                    scrollTop.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+                    document.body.appendChild(scrollTop);
+                }
+            } else {
+                const scrollTop = document.getElementById('scroll-top');
+                if (scrollTop) {
+                    scrollTop.remove();
+                }
+            }
+        });
+
+        // Hero Image Carousel
+        let currentImageIndex = 0;
+        const heroImages = document.querySelectorAll('.hero-image');
+        const indicators = document.querySelectorAll('.indicator');
+
+        function showImage(index) {
+            heroImages.forEach((img, i) => {
+                img.style.opacity = i === index ? '1' : '0';
+            });
+            
+            indicators.forEach((indicator, i) => {
+                if (i === index) {
+                    indicator.classList.add('bg-white', 'shadow-lg', 'scale-125');
+                    indicator.classList.remove('bg-white/60');
+                } else {
+                    indicator.classList.remove('bg-white', 'shadow-lg', 'scale-125');
+                    indicator.classList.add('bg-white/60');
+                }
+            });
+        }
+
+        function nextImage() {
+            currentImageIndex = (currentImageIndex + 1) % heroImages.length;
+            showImage(currentImageIndex);
+        }
+
+        // Auto-change images every 2 seconds
+        setInterval(nextImage, 2000);
+
+        // Indicator click handlers
+        indicators.forEach((indicator, index) => {
+            indicator.addEventListener('click', () => {
+                currentImageIndex = index;
+                showImage(currentImageIndex);
+            });
+        });
+
+        // Auto-restart animations for steps and tech sections
+        function restartSectionAnimations() {
+            // Restart step animations every 15 seconds
+            setInterval(() => {
+                const stepCards = document.querySelectorAll('#steps-container .step-card');
+                stepCards.forEach((card, index) => {
+                    setTimeout(() => {
+                        card.style.animation = 'none';
+                        card.offsetHeight; // Trigger reflow
+                        card.style.animation = null;
+                        card.classList.add('auto-step-reveal', 'auto-step-glow');
+                    }, index * 500);
+                });
+            }, 15000);
+
+            // Restart tech animations every 12 seconds
+            setInterval(() => {
+                const techCards = document.querySelectorAll('#tech-container .tech-card');
+                techCards.forEach((card, index) => {
+                    setTimeout(() => {
+                        card.style.animation = 'none';
+                        card.offsetHeight; // Trigger reflow
+                        card.style.animation = null;
+                        card.classList.add('auto-tech-float', 'auto-tech-glow');
+                    }, index * 600);
+                });
+            }, 12000);
+
+            // Restart feature animations every 10 seconds
+            setInterval(() => {
+                const featureCards = document.querySelectorAll('.feature-card');
+                featureCards.forEach((card, index) => {
+                    setTimeout(() => {
+                        card.style.animation = 'none';
+                        card.offsetHeight; // Trigger reflow
+                        card.style.animation = null;
+                        card.classList.add('auto-step-reveal', 'auto-step-glow');
+                    }, index * 400);
+                });
+            }, 10000);
+        }
+
+        // Start auto-restart animations when page loads
+        window.addEventListener('load', () => {
+            restartSectionAnimations();
+        });
+    </script>
+</body>
+</html>
