@@ -174,6 +174,32 @@ def health_check(request):
         'email_host': settings.EMAIL_HOST,
         'email_port': settings.EMAIL_PORT,
         'email_use_tls': settings.EMAIL_USE_TLS,
+        'request_method': request.method,
+        'request_path': request.path,
+        'user_agent': request.META.get('HTTP_USER_AGENT', ''),
     }
     
     return JsonResponse(health_status)
+
+def test_contact(request):
+    """Test endpoint for contact form debugging."""
+    from django.http import JsonResponse
+    
+    if request.method == 'POST':
+        # Log the request details
+        logger = logging.getLogger(__name__)
+        logger.info(f"Test contact POST request received")
+        logger.info(f"Request headers: {dict(request.headers)}")
+        logger.info(f"Request content type: {request.content_type}")
+        logger.info(f"Request body: {request.body}")
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'Test contact endpoint working',
+            'received_data': dict(request.POST) if request.POST else 'No POST data'
+        })
+    
+    return JsonResponse({
+        'success': False,
+        'message': 'This endpoint only accepts POST requests'
+    })
