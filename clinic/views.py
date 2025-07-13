@@ -14,31 +14,53 @@ def about(request):
 
 def contact(request):
     """Contact page view for the medical clinic."""
-    from django.core.mail import send_mail
+    from django.core.mail import send_mail, BadHeaderError
     from django.conf import settings
     from django.http import JsonResponse
-    import json
     import re
 
     if request.method == 'POST':
-        name = request.POST.get('name', '')
-        email = request.POST.get('email', '')
-        phone = request.POST.get('phone', '')
-        subject = request.POST.get('subject', 'General Inquiry')
-        message = request.POST.get('message', '')
+        name = request.POST.get('name', '').strip()
+        email = request.POST.get('email', '').strip()
+        phone = request.POST.get('phone', '').strip()
+        subject = request.POST.get('subject', 'General Inquiry').strip()
+        message = request.POST.get('message', '').strip()
+
+        # Validation
+        if not all([name, email, message]):
+            return JsonResponse({
+                'success': False,
+                'error': 'Please fill in all required fields.'
+            })
 
         # Validate email format
         email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
         if not re.match(email_regex, email):
-            return JsonResponse({'success': False, 'error': 'Invalid email format'})
+            return JsonResponse({
+                'success': False,
+                'error': 'Please enter a valid email address.'
+            })
 
         # Validate name (only letters, spaces, and hyphens)
         name_regex = r'^[a-zA-Z\s-]+$'
         if not re.match(name_regex, name):
-            return JsonResponse({'success': False, 'error': 'Invalid name format'})
+            return JsonResponse({
+                'success': False,
+                'error': 'Name should only contain letters, spaces, and hyphens.'
+            })
 
         try:
-            full_message = f"Name: {name}\nEmail: {email}\nPhone: {phone}\nSubject: {subject}\nMessage: {message}"
+            # Construct email message
+            full_message = (
+                f"New Contact Form Submission\n\n"
+                f"Name: {name}\n"
+                f"Email: {email}\n"
+                f"Phone: {phone}\n"
+                f"Subject: {subject}\n\n"
+                f"Message:\n{message}"
+            )
+
+            # Send email
             send_mail(
                 subject=f"Contact Form: {subject}",
                 message=full_message,
@@ -47,14 +69,19 @@ def contact(request):
                 fail_silently=False,
             )
             
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return JsonResponse({'success': True})
-            return render(request, 'clinic/contact.html', {'success': True})
+            return JsonResponse({'success': True})
             
+        except BadHeaderError:
+            return JsonResponse({
+                'success': False,
+                'error': 'Invalid header found in the message.'
+            })
         except Exception as e:
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return JsonResponse({'success': False, 'error': str(e)})
-            return render(request, 'clinic/contact.html', {'error': str(e)})
+            print(f"Error sending email: {str(e)}")
+            return JsonResponse({
+                'success': False,
+                'error': 'There was an error sending your message. Please try again later.'
+            })
 
     return render(request, 'clinic/contact.html')
 

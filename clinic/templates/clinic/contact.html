@@ -750,37 +750,56 @@
             if (contactForm) {
                 contactForm.addEventListener('submit', function(e) {
                     e.preventDefault();
-
+                    
                     // Hide any existing alerts
                     successAlert.classList.add('hidden');
                     errorAlert.classList.add('hidden');
 
+                    // Get the form data
+                    const formData = new FormData(contactForm);
+                    
                     // Get the CSRF token
                     const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
-                    // Create FormData object
-                    const formData = new FormData(contactForm);
+                    // Disable submit button
+                    const submitBtn = contactForm.querySelector('button[type="submit"]');
+                    const originalBtnText = submitBtn.innerHTML;
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
 
                     // Send AJAX request
                     fetch(window.location.href, {
                         method: 'POST',
                         body: formData,
                         headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
                             'X-CSRFToken': csrfToken
                         }
                     })
-                    .then(response => response.json())
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
                     .then(data => {
                         if (data.success) {
                             successAlert.classList.remove('hidden');
                             contactForm.reset();
                         } else {
+                            errorAlert.textContent = data.error || 'Error sending message. Please try again.';
                             errorAlert.classList.remove('hidden');
                         }
                     })
                     .catch(error => {
                         console.error('Error:', error);
+                        errorAlert.textContent = 'Error sending message. Please try again.';
                         errorAlert.classList.remove('hidden');
+                    })
+                    .finally(() => {
+                        // Re-enable submit button
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalBtnText;
                     });
                 });
             }
@@ -788,22 +807,20 @@
             // Create animated particles
             function createParticles() {
                 const container = document.getElementById('particles-container');
+                if (!container) return;
+                
                 const particleCount = 20;
-
                 for (let i = 0; i < particleCount; i++) {
                     const particle = document.createElement('div');
                     particle.className = 'particle';
                     
-                    // Random size between 2-6px
                     const size = Math.random() * 4 + 2;
                     particle.style.width = size + 'px';
                     particle.style.height = size + 'px';
                     
-                    // Random position
                     particle.style.left = Math.random() * 100 + '%';
                     particle.style.top = Math.random() * 100 + '%';
                     
-                    // Random animation delay
                     particle.style.animationDelay = Math.random() * 12 + 's';
                     particle.style.animationDuration = (Math.random() * 8 + 8) + 's';
                     
@@ -820,13 +837,13 @@
             const twitterBtn = document.querySelector('.social-btn.twitter');
             
             if (githubBtn) {
-                githubBtn.addEventListener('click', function(e) {
+                githubBtn.addEventListener('click', function() {
                     window.open('https://github.com/Sabermrddz', '_blank');
                 });
             }
             
             if (twitterBtn) {
-                twitterBtn.addEventListener('click', function(e) {
+                twitterBtn.addEventListener('click', function() {
                     window.open('https://x.com/sabermourad7', '_blank');
                 });
             }
