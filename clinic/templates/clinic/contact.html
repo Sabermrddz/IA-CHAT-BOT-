@@ -641,10 +641,16 @@
                             </form>
                             <!-- Alert Messages -->
                             <div id="successAlert" class="hidden mt-4 p-4 rounded-lg bg-green-100 text-green-700">
-                                Message sent successfully!
+                                <div class="flex items-center">
+                                    <i class="fas fa-check-circle mr-2"></i>
+                                    <span>Message sent successfully!</span>
+                                </div>
                             </div>
                             <div id="errorAlert" class="hidden mt-4 p-4 rounded-lg bg-red-100 text-red-700">
-                                Error sending message. Please try again.
+                                <div class="flex items-center">
+                                    <i class="fas fa-exclamation-circle mr-2"></i>
+                                    <span></span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -731,6 +737,7 @@
             const contactForm = document.getElementById('contactForm');
             const successAlert = document.getElementById('successAlert');
             const errorAlert = document.getElementById('errorAlert');
+            const errorMessage = errorAlert.querySelector('span');
 
             // Mobile menu toggle
             if (mobileMenuBtn && mobileMenu && menuIcon) {
@@ -748,7 +755,7 @@
 
             // Contact form submission
             if (contactForm) {
-                contactForm.addEventListener('submit', function(e) {
+                contactForm.addEventListener('submit', async function(e) {
                     e.preventDefault();
                     
                     // Hide any existing alerts
@@ -765,90 +772,32 @@
                     const submitBtn = contactForm.querySelector('button[type="submit"]');
                     const originalBtnText = submitBtn.innerHTML;
                     submitBtn.disabled = true;
-                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Sending...';
 
-                    // Send AJAX request
-                    fetch(window.location.href, {
-                        method: 'POST',
-                        body: formData,
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest',
-                            'X-CSRFToken': csrfToken
-                        }
-                    })
-                    .then(response => {
+                    try {
+                        // Send AJAX request
+                        const response = await fetch(window.location.href, {
+                            method: 'POST',
+                            body: formData,
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'X-CSRFToken': csrfToken
+                            }
+                        });
+
                         if (!response.ok) {
                             throw new Error(`HTTP error! status: ${response.status}`);
                         }
-                        return response.json();
-                    })
-                    .then(data => {
+
+                        const data = await response.json();
                         console.log('Server response:', data);  // Debug log
+
                         if (data.success) {
+                            // Show success message
                             successAlert.classList.remove('hidden');
                             contactForm.reset();
-                        } else {
-                            errorAlert.textContent = data.error || 'Error sending message. Please try again.';
-                            errorAlert.classList.remove('hidden');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        errorAlert.textContent = `Error sending message: ${error.message}`;
-                        errorAlert.classList.remove('hidden');
-                    })
-                    .finally(() => {
-                        // Re-enable submit button
-                        submitBtn.disabled = false;
-                        submitBtn.innerHTML = originalBtnText;
-                    });
-                });
-            }
 
-            // Create animated particles
-            function createParticles() {
-                const container = document.getElementById('particles-container');
-                if (!container) return;
-                
-                const particleCount = 20;
-                for (let i = 0; i < particleCount; i++) {
-                    const particle = document.createElement('div');
-                    particle.className = 'particle';
-                    
-                    const size = Math.random() * 4 + 2;
-                    particle.style.width = size + 'px';
-                    particle.style.height = size + 'px';
-                    
-                    particle.style.left = Math.random() * 100 + '%';
-                    particle.style.top = Math.random() * 100 + '%';
-                    
-                    particle.style.animationDelay = Math.random() * 12 + 's';
-                    particle.style.animationDuration = (Math.random() * 8 + 8) + 's';
-                    
-                    particle.classList.add('animate-particle');
-                    container.appendChild(particle);
-                }
-            }
-
-            // Initialize particles
-            createParticles();
-
-            // Social media buttons
-            const githubBtn = document.querySelector('.social-btn.github');
-            const twitterBtn = document.querySelector('.social-btn.twitter');
-            
-            if (githubBtn) {
-                githubBtn.addEventListener('click', function() {
-                    window.open('https://github.com/Sabermrddz', '_blank');
-                });
-            }
-            
-            if (twitterBtn) {
-                twitterBtn.addEventListener('click', function() {
-                    window.open('https://x.com/sabermourad7', '_blank');
-                });
-            }
-        });
-    </script>
-</body>
-</html>
+                            // Hide success message after 5 seconds
+                            setTimeout(() => {
+                                successAlert.classList.add('hidden');
+                           

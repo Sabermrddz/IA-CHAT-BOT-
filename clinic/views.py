@@ -32,16 +32,11 @@ def contact(request):
             subject = request.POST.get('subject', 'General Inquiry').strip()
             message = request.POST.get('message', '').strip()
 
-            # Debug logging
-            logger.debug(f"Form submission received - Name: {name}, Email: {email}")
-            logger.debug(f"Current email settings - Backend: {settings.EMAIL_BACKEND}")
-            logger.debug(f"Email Host User: {settings.EMAIL_HOST_USER}")
-
-            # Validation
+            # Basic validation
             if not all([name, email, message]):
                 return JsonResponse({
                     'success': False,
-                    'error': 'Please fill in all required fields.'
+                    'error': 'Please fill in all required fields (Name, Email, and Message).'
                 })
 
             # Email format validation
@@ -65,40 +60,46 @@ Message:
 {message}
             """
 
-            # Debug logging before sending
-            logger.debug("Attempting to send email...")
+            try:
+                # Log email settings
+                logger.info(f"Using email backend: {settings.EMAIL_BACKEND}")
+                logger.info(f"Sending from: {settings.EMAIL_HOST_USER}")
+                logger.info(f"Using SMTP server: {settings.EMAIL_HOST}:{settings.EMAIL_PORT}")
 
-            # Send email
-            send_mail(
-                subject=f"Contact Form: {subject}",
-                message=full_message,
-                from_email=settings.EMAIL_HOST_USER,
-                recipient_list=[settings.EMAIL_HOST_USER],
-                fail_silently=False,
-            )
-            
-            # Debug logging after successful send
-            logger.debug("Email sent successfully")
-            
-            return JsonResponse({
-                'success': True,
-                'message': 'Your message has been sent successfully!'
-            })
-            
-        except BadHeaderError as e:
-            logger.error(f"BadHeaderError: {str(e)}")
-            return JsonResponse({
-                'success': False,
-                'error': 'Invalid header found in the message.'
-            })
+                # Send email
+                send_mail(
+                    subject=f"Contact Form: {subject}",
+                    message=full_message,
+                    from_email=settings.EMAIL_HOST_USER,
+                    recipient_list=[settings.EMAIL_HOST_USER],
+                    fail_silently=False,
+                )
+
+                return JsonResponse({
+                    'success': True,
+                    'message': 'Your message has been sent successfully!'
+                })
+
+            except BadHeaderError:
+                logger.error("BadHeaderError in email sending")
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Invalid header found in the message.'
+                })
+            except Exception as e:
+                logger.error(f"Email sending failed: {str(e)}")
+                logger.error(traceback.format_exc())
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Failed to send email. Please try again later.'
+                })
+
         except Exception as e:
-            # Log the full error traceback
-            logger.error("Error in contact form submission:")
+            logger.error(f"Form processing error: {str(e)}")
             logger.error(traceback.format_exc())
-            
             return JsonResponse({
                 'success': False,
-                'error': f'Error sending message: {str(e)}'
+                'error': 'An unexpected error occurred. Please try again.'
             })
 
     return render(request, 'clinic/contact.html')
