@@ -20,8 +20,16 @@ def contact(request):
     import re
     import traceback
     import logging
+    import os
+    import json
 
     logger = logging.getLogger(__name__)
+    
+    # Log request information for debugging
+    logger.info(f"Contact form request: {request.method}")
+    if request.method == 'POST':
+        logger.info(f"Request headers: {dict(request.headers)}")
+        logger.info(f"Request content type: {request.content_type}")
 
     if request.method == 'POST':
         try:
@@ -58,48 +66,78 @@ Subject: {subject}
 
 Message:
 {message}
+
+---
+Sent from Inspair.Health Contact Form
             """
 
+            # Check if email settings are properly configured
+            email_host_user = os.getenv('EMAIL_HOST_USER')
+            email_host_password = os.getenv('EMAIL_HOST_PASSWORD')
+            
+            if not email_host_user or not email_host_password:
+                logger.error("Email credentials not configured")
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Email service is not configured. Please contact the administrator.'
+                })
+
             try:
-                # Log email settings
+                # Log email settings (without sensitive data)
                 logger.info(f"Using email backend: {settings.EMAIL_BACKEND}")
-                logger.info(f"Sending from: {settings.EMAIL_HOST_USER}")
-                logger.info(f"Using SMTP server: {settings.EMAIL_HOST}:{settings.EMAIL_PORT}")
+                logger.info(f"Email host: {settings.EMAIL_HOST}")
+                logger.info(f"Email port: {settings.EMAIL_PORT}")
+                logger.info(f"Email TLS: {settings.EMAIL_USE_TLS}")
+                logger.info(f"Email user configured: {'Yes' if email_host_user else 'No'}")
 
                 # Send email
                 send_mail(
                     subject=f"Contact Form: {subject}",
                     message=full_message,
-                    from_email=settings.EMAIL_HOST_USER,
-                    recipient_list=[settings.EMAIL_HOST_USER],
+                    from_email=email_host_user,
+                    recipient_list=[email_host_user],  # Send to the same email
                     fail_silently=False,
                 )
 
+                logger.info("Email sent successfully")
                 return JsonResponse({
                     'success': True,
-                    'message': 'Your message has been sent successfully!'
+                    'message': 'Your message has been sent successfully! We will get back to you within 24 hours.'
                 })
 
-            except BadHeaderError:
-                logger.error("BadHeaderError in email sending")
+            except BadHeaderError as e:
+                logger.error(f"BadHeaderError in email sending: {str(e)}")
                 return JsonResponse({
                     'success': False,
-                    'error': 'Invalid header found in the message.'
+                    'error': 'Invalid header found in the message. Please check your input and try again.'
                 })
             except Exception as e:
                 logger.error(f"Email sending failed: {str(e)}")
                 logger.error(traceback.format_exc())
-                return JsonResponse({
-                    'success': False,
-                    'error': 'Failed to send email. Please try again later.'
-                })
+                
+                # Provide more specific error messages
+                if "Authentication" in str(e):
+                    return JsonResponse({
+                        'success': False,
+                        'error': 'Email authentication failed. Please contact the administrator.'
+                    })
+                elif "Connection" in str(e):
+                    return JsonResponse({
+                        'success': False,
+                        'error': 'Unable to connect to email server. Please try again later.'
+                    })
+                else:
+                    return JsonResponse({
+                        'success': False,
+                        'error': 'Failed to send email. Please try again later or contact us directly.'
+                    })
 
         except Exception as e:
             logger.error(f"Form processing error: {str(e)}")
             logger.error(traceback.format_exc())
             return JsonResponse({
                 'success': False,
-                'error': 'An unexpected error occurred. Please try again.'
+                'error': 'An unexpected error occurred. Please try again or contact us directly.'
             })
 
     return render(request, 'clinic/contact.html')
@@ -116,3 +154,26 @@ def chat_box(request):
 def how_it_woks(request):
     """Chat box page view for the medical clinic."""
     return render(request, 'clinic/how_it_woks.html')
+
+def health_check(request):
+    """Health check endpoint for Railway deployment."""
+    from django.http import JsonResponse
+    import os
+    
+    # Check environment variables
+    email_user = os.getenv('EMAIL_HOST_USER')
+    email_password = os.getenv('EMAIL_HOST_PASSWORD')
+    debug_mode = os.getenv('DEBUG', 'False')
+    
+    health_status = {
+        'status': 'healthy',
+        'email_configured': bool(email_user and email_password),
+        'debug_mode': debug_mode == 'True',
+        'allowed_hosts': settings.ALLOWED_HOSTS,
+        'email_backend': settings.EMAIL_BACKEND,
+        'email_host': settings.EMAIL_HOST,
+        'email_port': settings.EMAIL_PORT,
+        'email_use_tls': settings.EMAIL_USE_TLS,
+    }
+    
+    return JsonResponse(health_status)

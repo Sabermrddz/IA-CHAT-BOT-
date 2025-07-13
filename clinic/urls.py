@@ -12,4 +12,5 @@ urlpatterns = [
     path('how_it_woks', views.how_it_woks, name='how_it_woks'),
     path('api/live-posts/', views.live_posts_api, name='live_posts_api'),
     path('chat-ai/', views.chat_ai, name='chat_ai'),
+    path('health/', views.health_check, name='health_check'),
 ]
