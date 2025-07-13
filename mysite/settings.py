@@ -35,6 +35,10 @@ DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = ['inspairdin.up.railway.app', 'localhost', '127.0.0.1']
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://inspairdin.up.railway.app',
+]
+
 
 # Application definition
 
